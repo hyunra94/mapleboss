@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Maple Boss Sketch Log v18</title>
+  <style>
+    :root{
+      --paper:#fbf1d8; --paper2:#fffaf0; --ink:#29231e; --muted:#716658; --line:#2d271f;
+      --pink:#f4a8bc; --blue:#9ec3ee; --green:#b9d99b; --yellow:#f4d36d; --purple:#c8b5ee; --orange:#f3b06e;
+      --shadow:5px 6px 0 rgba(45,39,31,.18); --soft:2px 3px 0 rgba(45,39,31,.12); --r:22px;
+    }
+    *{box-sizing:border-box} html,body{margin:0;min-height:100%;color:var(--ink);font-family:ui-rounded,"Apple SD Gothic Neo","Pretendard","Noto Sans KR",system-ui,sans-serif}
+    body{background:radial-gradient(circle at 12% 18%,rgba(255,255,255,.7) 0 1px,transparent 1px 100%),linear-gradient(90deg,rgba(45,39,31,.045) 1px,transparent 1px),linear-gradient(rgba(45,39,31,.035) 1px,transparent 1px),var(--paper);background-size:32px 32px,26px 26px,26px 26px,auto}
+    button,input,select,textarea{font:inherit;color:inherit} button{cursor:pointer} a{color:inherit}.app{max-width:1240px;margin:0 auto;padding:16px 14px 92px}
+    .paper,.hero,.card,.tabbar,.drawer,.modalBox{background:rgba(255,250,240,.9);border:2px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);position:relative;overflow:hidden}.paper:before,.hero:before,.card:before{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(120deg,rgba(255,255,255,.55),transparent 38%)}
+    .hero{padding:18px;margin-bottom:14px;display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center}.brandBtn{border:0;background:transparent;text-align:left;padding:0;cursor:pointer}.menuChip{border:2px solid var(--line);border-radius:16px;background:#fffdf5;box-shadow:var(--soft);font-weight:1000;font-size:16px;padding:10px 14px}.menuChip.active{background:var(--yellow)}.title{font-size:clamp(30px,5vw,54px);line-height:.9;margin:0;font-weight:1000;letter-spacing:-1px}.scribble{font-family:"Comic Sans MS","Gaegu",cursive;transform:rotate(-1deg);display:inline-block}.miniStats{display:grid;grid-template-columns:repeat(4,118px);gap:8px}.stat{border:2px dashed var(--line);border-radius:17px;background:#fffdf5;padding:9px 10px}.stat span{display:block;color:var(--muted);font-size:11px;font-weight:900}.stat b{font-size:19px}
+    .tabbar{position:fixed;left:50%;bottom:calc(10px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:25;width:min(760px,calc(100% - 18px));margin:0;padding:7px;display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.tab{border:2px solid var(--line);border-radius:16px;background:#fffdf5;padding:10px 4px;font-weight:1000;box-shadow:var(--soft);white-space:nowrap;text-align:center;font-size:clamp(11px,2.7vw,14px);min-width:0}.tab.active{background:var(--yellow);transform:translateY(-2px)}
+    .view{display:none}.view.active{display:block}.grid{display:grid;grid-template-columns:320px 1fr;gap:14px}.stack{display:grid;gap:10px}.card{padding:15px;margin-bottom:14px}.card h2,.card h3{margin:0 0 10px}.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.split{display:flex;justify-content:space-between;gap:10px;align-items:center}.muted{color:var(--muted);font-weight:800}.small{font-size:12px}.big{font-size:28px;font-weight:1000}.pill{display:inline-flex;align-items:center;gap:5px;border:2px solid var(--line);border-radius:999px;background:#fff;padding:5px 9px;font-size:12px;font-weight:950;margin:2px}.btn{border:2px solid var(--line);border-radius:999px;background:#fffdf5;padding:10px 13px;font-weight:1000;box-shadow:3px 4px 0 rgba(45,39,31,.18);text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:6px;white-space:nowrap}.btn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 rgba(45,39,31,.18)}.primary{background:var(--yellow)}.pink{background:var(--pink)}.blue{background:var(--blue)}.green{background:var(--green)}.purple{background:var(--purple)}.orange{background:var(--orange)}.ghost{background:transparent}
+    input,select,textarea{width:100%;border:2px solid var(--line);border-radius:14px;background:#fffdf5;padding:10px 11px;outline:none;box-shadow:var(--soft)}textarea{min-height:78px;resize:vertical}label{font-size:12px;font-weight:950;color:var(--muted)}.field{display:grid;gap:5px}.formGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.list{display:grid;gap:8px}.quickAdd{display:grid;grid-template-columns:1fr auto;gap:8px;margin-bottom:10px}.quickAdd .btn{height:44px;padding:0 16px}.charBtn{width:100%;text-align:left;border:2px solid var(--line);border-radius:18px;background:#fffdf5;padding:12px;box-shadow:var(--soft)}.charBtn.active{background:var(--yellow)}.charName{font-size:18px;font-weight:1000}.charMeta{font-size:12px;color:var(--muted);font-weight:900;margin-top:2px}.charMoney{font-weight:1000;margin-top:8px}.inlineBosses{margin:6px 0 10px 12px;display:grid;gap:5px}.inlineBoss{border:2px dashed var(--line);border-radius:12px;background:#fffdf5;padding:6px 8px;font-size:12px;font-weight:900;color:var(--muted);display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:8px}.inlineBoss.done{background:rgba(185,217,155,.35)}.miniCheck{width:24px;height:24px;border:2px solid var(--line);border-radius:9px;background:#fffdf5;box-shadow:var(--soft);font-weight:1000;display:grid;place-items:center;padding:0}.pickerCount{border:2px dashed var(--line);border-radius:14px;background:#fffdf5;padding:8px 10px;margin:8px 0;font-weight:1000}.charCardHead{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:start}.linkGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}.charGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.charTile{border:2px solid var(--line);border-radius:18px;background:#fffdf5;padding:12px;box-shadow:var(--soft);text-align:left;cursor:pointer}.charTile.active{background:var(--yellow)}.miniLinks{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-top:10px}.miniLinks .btn{padding:7px 4px;font-size:11px;border-radius:12px;box-shadow:var(--soft)}
+    .bossToolbar{display:grid;grid-template-columns:1fr 150px 150px;gap:8px;margin-bottom:10px}.presetBox{border:2px dashed var(--line);border-radius:16px;background:#fffdf5;padding:10px;margin-bottom:10px}.bossItem{display:grid;grid-template-columns:32px 1fr 120px 70px 36px;gap:8px;align-items:center;border:2px solid var(--line);border-radius:16px;background:#fffdf5;padding:9px}.bossItem.done{background:#edf7df}.check{width:28px;height:28px;border:2px solid var(--line);border-radius:9px;background:#fff;display:grid;place-items:center;font-weight:1000}.done .check{background:var(--green)}.bossName{font-weight:1000}.bossType{font-size:11px;color:var(--muted);font-weight:900}.moneyInput{padding:8px;text-align:right}.iconBtn{width:34px;height:34px;border:2px solid var(--line);border-radius:12px;background:#fff;font-weight:1000;box-shadow:var(--soft)}
+    .dashGrid{display:grid;grid-template-columns:1.2fr .8fr;gap:14px}.summaryCards{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.summary{border:2px dashed var(--line);border-radius:18px;background:#fffdf5;padding:13px}.summary span{display:block;font-size:12px;color:var(--muted);font-weight:900}.summary b{font-size:24px}.noticeTabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0 12px}.noticeTab{border:2px solid var(--line);border-radius:16px;background:#fffdf5;padding:10px;font-weight:1000;box-shadow:var(--soft)}.noticeTab.active{background:var(--blue)}.noticePanel{display:none}.noticePanel.active{display:grid;gap:8px}.notice{border:2px dashed var(--line);border-radius:16px;background:#fffdf5;padding:10px}.notice.sunday{background:#fff6cf}.notice a{font-weight:1000}.notice .date{font-size:12px;color:var(--muted);font-weight:900}.empty{border:2px dashed var(--line);border-radius:18px;background:rgba(255,255,255,.45);padding:26px;text-align:center;color:var(--muted);font-weight:950}.table{width:100%;border-collapse:separate;border-spacing:0 8px}.table td,.table th{text-align:left;padding:10px;border-top:2px solid var(--line);border-bottom:2px solid var(--line);background:#fffdf5}.table td:first-child,.table th:first-child{border-left:2px solid var(--line);border-radius:14px 0 0 14px}.table td:last-child,.table th:last-child{border-right:2px solid var(--line);border-radius:0 14px 14px 0;text-align:right}
+
+    .bossGroup{border:2px solid var(--line);border-radius:18px;background:#fffdf5;box-shadow:var(--soft);overflow:hidden}.bossGroup summary{list-style:none;cursor:pointer;padding:13px 14px;font-weight:1000;display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center}.bossGroup summary::-webkit-details-marker{display:none}.bossGroup[open] summary{background:var(--yellow)}.groupMeta{font-size:12px;color:var(--muted);font-weight:900}.bossGroupBody{display:grid;gap:8px;padding:10px;border-top:2px dashed var(--line)}
+    .modal{position:fixed;inset:0;background:rgba(41,35,30,.38);display:none;place-items:center;padding:16px;z-index:30}.modal.show{display:grid}.modalBox{width:min(620px,100%);padding:17px}.modalBox.wide{width:min(860px,100%)}.actions{display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap;margin-top:12px}.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--ink);color:#fffaf0;border-radius:999px;padding:11px 16px;font-weight:1000;display:none;z-index:50}.toast.show{display:block}
+    .bossPicker{max-height:62vh;overflow:auto;padding-right:4px;display:grid;gap:8px}.pickGroup{border:2px solid var(--line);border-radius:16px;background:#fffdf5;box-shadow:var(--soft);overflow:hidden}.pickHead{padding:11px 12px;background:#fffaf0;font-weight:1000;display:flex;justify-content:space-between;gap:8px}.pickBody{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;padding:10px;border-top:2px dashed var(--line)}.pickBtn{border:2px solid var(--line);border-radius:14px;background:#fff;padding:10px;text-align:left;font-weight:950;box-shadow:var(--soft)}.pickBtn.selected{background:var(--green)}.pickBtn[disabled]{opacity:.45;filter:grayscale(.2)}.savedHint{font-size:12px;color:var(--muted);font-weight:900}.inlinePickSummary{border:2px dashed var(--line);border-radius:18px;background:#fffdf5;padding:12px 14px;font-weight:1000;font-size:18px;margin:8px 0 12px}.inlinePickList{display:grid;gap:10px}.inlinePickGroup{border:2px solid var(--line);border-radius:18px;background:#fffdf5;box-shadow:var(--soft);overflow:hidden}.inlinePickHead{padding:12px 14px;font-weight:1000;display:flex;justify-content:space-between;gap:8px}.inlinePickBody{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;padding:10px;border-top:2px dashed var(--line)}.inlinePickBtn{border:2px solid var(--line);border-radius:15px;background:#fff;padding:12px;text-align:left;font-weight:1000;box-shadow:var(--soft);font-size:17px}.inlinePickBtn.selected{background:var(--green)}.inlinePickBtn .savedHint{display:block;margin-top:4px}.compactPickGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.compactPickGrid .inlinePickBody{grid-template-columns:1fr}.compactPickGrid .inlinePickHead{padding:10px 12px}.compactPickGrid .inlinePickBtn{font-size:15px;padding:10px}.partyChips{display:flex;gap:6px;flex-wrap:nowrap;margin-top:8px;align-items:center}.partyChip{border:2px solid var(--line);border-radius:999px;background:#fffdf5;padding:5px 9px;font-size:12px;font-weight:1000;box-shadow:var(--soft);width:auto;min-width:0}.partyChip.active{background:var(--blue)}select.partyChip{appearance:auto;text-align:center;max-width:82px}.progressWrap{margin-top:8px;border:2px dashed var(--line);border-radius:999px;background:#fffdf5;overflow:hidden;height:16px}.progressBar{height:100%;background:var(--green);width:0%;transition:width .18s ease}.progressText{font-size:11px;color:var(--muted);font-weight:900;margin-top:4px}
+    @media(max-width:900px){.hero{grid-template-columns:auto 1fr auto}.grid,.dashGrid{grid-template-columns:1fr}.miniStats,.summaryCards{grid-template-columns:repeat(2,1fr)}.bossToolbar{grid-template-columns:1fr}.bossItem{grid-template-columns:32px 1fr}.bossItem input,.bossItem select,.bossItem .iconBtn{grid-column:2}.linkGrid{grid-template-columns:1fr}.formGrid{grid-template-columns:1fr}.charGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.miniLinks{grid-template-columns:repeat(3,1fr)}}
+  .smallDone{margin-top:6px;padding:5px 8px;font-size:11px}.bossItem.selectedBoss{background:rgba(244,211,109,.18)}
+  </style>
+</head>
+<body>
+<div class="app">
+  <header class="hero">
+    <button class="brandBtn" id="homeBtn" title="대시보드"><h1 class="title"><span class="scribble">Maple Boss</span><br>Sketch Log</h1></button>
+    <button class="menuChip" id="menuBtn" title="설정">설정</button>
+    <div class="miniStats" style="grid-column:1 / -1"><div class="stat"><span>캐릭터</span><b id="sChars">0</b></div><div class="stat"><span>주간 예상</span><b id="sWeekly">0</b></div><div class="stat"><span>완료 수익</span><b id="sDone">0</b></div><div class="stat"><span>월간 예상</span><b id="sMonthly">0</b></div></div>
+  </header>
+  <nav class="tabbar" id="tabs">
+    <button class="tab" data-view="characters">캐릭터</button><button class="tab" data-view="bosses">보스 집계</button><button class="tab" data-view="notices">메이플 알림</button>
+  </nav>
+
+  <section id="dashboard" class="view active">
+    <div class="dashGrid"><div class="card"><h2>이번 주 한눈에 보기</h2><div class="summaryCards"><div class="summary"><span>전체 예상</span><b id="dTotal">0</b></div><div class="summary"><span>완료</span><b id="dDone">0</b></div><div class="summary"><span>남은 예상</span><b id="dRemain">0</b></div><div class="summary"><span>체크한 보스</span><b id="dCount">0</b></div></div><h3 style="margin-top:16px">캐릭터별 수익</h3><div id="dashChars"></div></div><div class="card"><div class="split"><h2>최근 메이플 알림</h2><button class="btn blue" id="quickNotice">감지</button></div><div id="dashNotices" class="list"></div></div></div>
+  </section>
+
+  <section id="characters" class="view"><div class="grid"><aside class="card"><h2>캐릭터 목록</h2><div class="quickAdd"><input id="quickCharName" placeholder="캐릭터명 검색/입력"><button class="btn primary" id="quickAddChar">+ 추가</button></div><div class="row" style="margin-bottom:10px"><button class="btn ghost" id="addChar">자세히 추가</button><button class="btn blue" id="fetchCurrentChar">선택 캐릭터 API 조회</button></div><div id="charList" class="list"></div></aside><main class="card"><div id="charDetail"></div></main></div></section>
+
+  <section id="bosses" class="view"><div class="grid"><aside class="card"><h2>집계 캐릭터</h2><div id="bossCharList" class="list"></div><button class="btn ghost" id="resetWeek" style="margin-top:10px;width:100%">주간 체크 초기화</button></aside><main class="card"><div class="split"><h2>보스 결정석</h2><button class="btn orange" id="resetBossPreset">기본 가격표 다시 적용</button></div><div class="presetBox"><b>잡는 보스 선택</b><p class="muted small" style="margin:6px 0 8px">보스 이름별로 난이도 하나만 골라요. 선택하면 바로 캐릭터별 집계에 반영돼요.</p><div class="row"><button class="btn blue" id="enableCommonBosses">주요 보스 선택</button><button class="btn green" id="addBoss" style="display:none">+ 잡는 보스 선택</button></div></div><div id="bossList" class="list"></div></main></div></section>
+
+  <section id="notices" class="view"><div class="dashGrid"><div class="card"><div class="split"><h2>메이플 알림 감지</h2><div class="row"><button class="btn blue" id="noticeBtn">공지 감지</button><button class="btn orange" id="sundayBtn">썬데이만 감지</button></div></div><p class="muted small">공지 전체는 이벤트/점검/업데이트/캐시샵 키워드를 저장하고, 썬데이 탭은 제목에 ‘썬데이’가 들어간 공지만 따로 모아요.</p><div class="noticeTabs"><button class="noticeTab active" data-notice-tab="all">공지 감지</button><button class="noticeTab" data-notice-tab="sunday">썬데이 메이플</button></div><div id="noticeList" class="noticePanel active"></div><div id="sundayList" class="noticePanel"></div></div><div class="card"><h2>수동 메모</h2><div class="stack"><input id="manualNoticeTitle" placeholder="예: 썬데이 메이플 - 스타포스 30% 할인"><input id="manualNoticeUrl" placeholder="링크"><button class="btn primary" id="addManualNotice">메모 저장</button><button class="btn ghost" id="clearNotices">알림 전체 삭제</button></div></div></div></section>
+
+  <section id="settings" class="view"><div class="dashGrid"><div class="card"><h2>API / 데이터</h2><div class="stack"><div class="field"><label>NEXON Open API Key</label><input id="apiKey" type="password" placeholder="API Key 입력"></div><button class="btn primary" id="saveApi">API Key 저장</button><div class="row"><button class="btn" id="exportData">JSON 내보내기</button><label class="btn" for="importData">JSON 가져오기</label><input id="importData" type="file" accept="application/json" style="display:none"></div><p class="muted small">데이터는 이 기기 브라우저 localStorage에 저장돼요. 깃허브/클라우드플레어로 배포해도 기기별 저장이에요.</p></div></div><div class="card"><h2>Maplescouter 링크 규칙</h2><p class="muted small">캐릭터명만 바꿔서 아래 구조로 열어요.</p><pre style="white-space:pre-wrap;background:#fffdf5;border:2px dashed var(--line);border-radius:16px;padding:12px">/ko/result?name=캐릭터명&preset=00000
+/ko/info?name=캐릭터명&preset=00000
+/ko/spec-order?name=캐릭터명&preset=00000</pre></div></div></section>
+</div>
+
+<div class="modal" id="modal"><div class="modalBox"><h2 id="modalTitle">편집</h2><div id="modalBody"></div><div class="actions"><button class="btn ghost" id="cancelModal">취소</button><button class="btn primary" id="saveModal">저장</button></div></div></div><div class="toast" id="toast"></div>
+<script>
+const LS='mapleBossSketchV5';
+const BOSS_PRESET_RAW=[
+ ['매그너스 (하드)',8560000,'weekly'],
+ ['블러디 퀸 (카오스)',8080000,'weekly'],
+ ['벨룸 (카오스)',9280000,'weekly'],
+ ['파풀라투스 (카오스)',13100000,'weekly'],
+ ['스우 (노멀)',16700000,'weekly'],
+ ['스우 (하드)',51500000,'weekly'],
+ ['스우 (익스트림)',574000000,'weekly'],
+ ['데미안 (노멀)',17500000,'weekly'],
+ ['데미안 (하드)',48900000,'weekly'],
+ ['가디언 엔젤 슬라임 (노멀)',25500000,'weekly'],
+ ['가디언 엔젤 슬라임 (카오스)',75100000,'weekly'],
+ ['루시드 (이지)',29800000,'weekly'],
+ ['루시드 (노멀)',35600000,'weekly'],
+ ['루시드 (하드)',62900000,'weekly'],
+ ['윌 (이지)',32300000,'weekly'],
+ ['윌 (노멀)',41100000,'weekly'],
+ ['윌 (하드)',77100000,'weekly'],
+ ['더스크 (노멀)',44000000,'weekly'],
+ ['더스크 (카오스)',69800000,'weekly'],
+ ['듄켈 (노멀)',47500000,'weekly'],
+ ['듄켈 (하드)',94400000,'weekly'],
+ ['진 힐라 (노멀)',71200000,'weekly'],
+ ['진 힐라 (하드)',106000000,'weekly'],
+ ['검은 마법사 (하드)',665000000,'monthly'],
+ ['검은 마법사 (익스트림)',8740000000,'monthly'],
+ ['선택받은 세렌 (노멀)',239000000,'weekly'],
+ ['선택받은 세렌 (하드)',356000000,'weekly'],
+ ['선택받은 세렌 (익스트림)',2835000000,'weekly'],
+ ['감시자 칼로스 (이지)',280000000,'weekly'],
+ ['감시자 칼로스 (노멀)',505000000,'weekly'],
+ ['감시자 칼로스 (카오스)',1273000000,'weekly'],
+ ['감시자 칼로스 (익스트림)',4104000000,'weekly'],
+ ['최초의 대적자 (이지)',308000000,'weekly'],
+ ['최초의 대적자 (노멀)',560000000,'weekly'],
+ ['최초의 대적자 (하드)',1435000000,'weekly'],
+ ['최초의 대적자 (익스트림)',4712000000,'weekly'],
+ ['카링 (이지)',377000000,'weekly'],
+ ['카링 (노멀)',678000000,'weekly'],
+ ['카링 (하드)',1739000000,'weekly'],
+ ['카링 (익스트림)',5387000000,'weekly'],
+ ['찬란한 흉성 (노말)',625000000,'weekly'],
+ ['찬란한 흉성 (하드)',2678000000,'weekly'],
+ ['림보 (노멀)',1026000000,'weekly'],
+ ['림보 (하드)',2385000000,'weekly'],
+ ['유피테르 (노말)',1615000000,'weekly'],
+ ['유피테르 (하드)',4845000000,'weekly'],
+ ['피에르 (카오스)',8150000,'weekly'],
+ ['반반 (카오스)',8140000,'weekly'],
+ ['발드릭스 (노멀)',1368000000,'weekly'],
+ ['발드릭스 (하드)',3078000000,'weekly']
+];
+const DEFAULT_BOSSES=BOSS_PRESET_RAW.map((b,i)=>({id:'b'+i,name:b[0],price:b[1],type:b[2]}));
+let state=load(); let selected=state.characters[0]?.id||null; let modalMode=null; let modalPayload=null; let pickerDraft=null; let pickerCharId=null;
+function bossKeyFromName(name){return (name||'').replace(/노말/g,'노멀').replace(/블러디퀸/g,'블러디 퀸').replace(/근원의 폭주/g,'찬란한 흉성').replace(/유니트르/g,'유피테르').replace(/키링/g,'카링').trim()}
+function migrateLoadedState(s){
+ const oldBosses=s.bosses||[];
+ const oldByKey={}; oldBosses.forEach(b=>oldByKey[bossKeyFromName(b.name)]=b);
+ const newBosses=DEFAULT_BOSSES.map(b=>({...b}));
+ const chars=(s.characters||[]).map(c=>{
+   const oldCbs=c.bosses||[]; const oldCbByKey={};
+   oldCbs.forEach(cb=>{const ob=oldBosses.find(b=>b.id===cb.id); if(ob)oldCbByKey[bossKeyFromName(ob.name)]=cb;});
+   return {...c,bosses:newBosses.map(nb=>{const prev=oldCbByKey[bossKeyFromName(nb.name)]; return {id:nb.id,enabled:!!prev?.enabled,done:!!prev?.done,price:nb.price,party:prev?.party||1};})};
+ });
+ return {apiKey:s.apiKey||'',characters:chars,bosses:newBosses,notices:s.notices||[]};
+}
+function load(){try{const s=JSON.parse(localStorage.getItem(LS)||'{}');return migrateLoadedState(s)}catch(e){return {apiKey:'',characters:[],bosses:DEFAULT_BOSSES,notices:[]}}}
+function save(){localStorage.setItem(LS,JSON.stringify(state));render();}
+function won(n){n=Number(n)||0; if(n>=100000000)return (n/100000000).toFixed(n%100000000?1:0)+'억'; if(n>=10000)return Math.round(n/10000).toLocaleString()+'만'; return n.toLocaleString();}
+function toast(t){const el=document.getElementById('toast');el.textContent=t;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),1600)}
+function enc(n){return encodeURIComponent(n||'')}
+function links(c){const n=enc(c.name);return {boss:`https://maplescouter.com/ko/result?name=${n}&preset=00000`,info:`https://maplescouter.com/ko/info?name=${n}&preset=00000`,spec:`https://maplescouter.com/ko/spec-order?name=${n}&preset=00000`}}
+function effectivePrice(cb,b){const price=Number(cb.price??b.price)||0; const party=Math.max(1,Number(cb.party||1)||1); return Math.floor(price/party);} 
+function charTotals(c){let w=0,m=0,d=0,cnt=0; for(const cb of c.bosses||[]){const b=state.bosses.find(x=>x.id===cb.id); if(!b)continue; const p=effectivePrice(cb,b); if(cb.enabled){ if(b.type==='monthly')m+=p; else w+=p; } if(cb.done){d+=p;cnt++;}} return {w,m,d,cnt,remain:w-d};}
+function activeChar(){return state.characters.find(c=>c.id===selected)||state.characters[0]}
+function ensureCharBosses(c){if(!c.bosses)c.bosses=[]; c.bosses.forEach(cb=>{if(!cb.party)cb.party=1;}); for(const b of state.bosses){if(!c.bosses.some(x=>x.id===b.id))c.bosses.push({id:b.id,enabled:false,done:false,price:b.price,party:1});}}
+function render(){state.characters.forEach(ensureCharBosses); if(!selected&&state.characters[0])selected=state.characters[0].id; const all=state.characters.map(charTotals); const weekly=all.reduce((a,t)=>a+t.w,0), monthly=all.reduce((a,t)=>a+t.m,0), done=all.reduce((a,t)=>a+t.d,0), cnt=all.reduce((a,t)=>a+t.cnt,0); ['sChars'].forEach(id=>document.getElementById(id).textContent=state.characters.length); document.getElementById('sWeekly').textContent=won(weekly);document.getElementById('sDone').textContent=won(done);document.getElementById('sMonthly').textContent=won(monthly);document.getElementById('dTotal').textContent=won(weekly);document.getElementById('dDone').textContent=won(done);document.getElementById('dRemain').textContent=won(weekly-done);document.getElementById('dCount').textContent=cnt;
+ renderCharLists(); renderCharDetail(); renderBosses(); renderDash(); renderNotices(); document.getElementById('apiKey').value=state.apiKey||'';}
+function selectedBossInline(c){ensureCharBosses(c); const rows=(c.bosses||[]).map(cb=>({cb,b:state.bosses.find(x=>x.id===cb.id)})).filter(x=>x.b&&x.cb.enabled).sort((a,b)=>effectivePrice(a.cb,a.b)-effectivePrice(b.cb,b.b)); if(!rows.length)return '<div class="inlineBosses"><div class="inlineBoss"><span></span><span>저장된 보스 없음</span><span></span></div></div>'; const total=rows.reduce((s,x)=>s+effectivePrice(x.cb,x.b),0); const done=rows.filter(x=>x.cb.done).reduce((s,x)=>s+effectivePrice(x.cb,x.b),0); const pct=total?Math.round(done/total*100):0; return '<div class="inlineBosses">'+rows.map(({cb,b})=>`<div class="inlineBoss ${cb.done?'done':''}"><button class="miniCheck" data-inlinecheck="${c.id}|${b.id}">${cb.done?'✓':''}</button><span>${bossBaseName(b.name)} ${bossDifficulty(b.name)}</span><span>${cb.party&&cb.party>1?cb.party+'인 · ':''}${won(effectivePrice(cb,b))}</span></div>`).join('')+`<div class="progressWrap"><div class="progressBar" style="width:${pct}%"></div></div><div class="progressText">완료 ${won(done)} / 남음 ${won(total-done)} · ${pct}%</div></div>`;}
+function charTileHtml(c){const t=charTotals(c); const l=links(c); return `<div class="charTile ${c.id===selected?'active':''}" data-sel="${c.id}"><div class="charName">${c.name}</div><div class="charMeta">${c.world||'-'} · ${c.job||'-'} · Lv.${c.level||'-'}</div><div class="charMoney">주간 ${won(t.w)} / 완료 ${won(t.d)}</div><div class="miniLinks"><a class="btn pink" target="_blank" href="${l.boss}">보스</a><a class="btn blue" target="_blank" href="${l.info}">장비</a><a class="btn green" target="_blank" href="${l.spec}">스펙</a></div></div>`;}
+function partyControlHtml(cb,b){const party=Number(cb.party||1)||1; const priceText=`${party}인 파티 · 1인당 ${won(effectivePrice(cb,b))}`; const otherVal=party>=3?String(party):''; return `<span class="savedHint">${priceText}</span><div class="partyChips"><button class="partyChip ${party===1?'active':''}" data-partyboss="${b.id}" data-party="1">1인</button><button class="partyChip ${party===2?'active':''}" data-partyboss="${b.id}" data-party="2">2인</button><select class="partyChip ${party>=3?'active':''}" data-partyother="${b.id}"><option value="" ${!otherVal?'selected':''}>기타 ▼</option><option value="3" ${otherVal==='3'?'selected':''}>3인</option><option value="4" ${otherVal==='4'?'selected':''}>4인</option><option value="5" ${otherVal==='5'?'selected':''}>5인</option><option value="6" ${otherVal==='6'?'selected':''}>6인</option></select></div>`;}
+function renderCharLists(){
+ const html=state.characters.length?`<div class="charGrid">${state.characters.map(c=>charTileHtml(c)).join('')}</div>`:'<div class="empty">캐릭터를 추가해줘</div>';
+ document.getElementById('charList').innerHTML=html;
+ const bossHtml=state.characters.length?state.characters.map(c=>{const t=charTotals(c);const btn=`<button class="charBtn ${c.id===selected?'active':''}" data-sel="${c.id}"><div class="charName">${c.name}</div><div class="charMeta">${c.world||'-'} · ${c.job||'-'} · Lv.${c.level||'-'}</div><div class="charMoney">주간 ${won(t.w)} / 완료 ${won(t.d)}</div></button>`; return btn+selectedBossInline(c);}).join(''):'<div class="empty">캐릭터를 추가해줘</div>';
+ document.getElementById('bossCharList').innerHTML=bossHtml;
+ document.querySelectorAll('[data-sel]').forEach(b=>b.onclick=(ev)=>{if(ev.target.closest('a'))return; selected=b.dataset.sel;render();});
+ document.querySelectorAll('[data-inlinecheck]').forEach(btn=>btn.onclick=(e)=>{e.stopPropagation(); const [cid,bid]=btn.dataset.inlinecheck.split('|'); const c=state.characters.find(x=>x.id===cid); if(!c)return; const cb=(c.bosses||[]).find(x=>x.id===bid); if(!cb)return; cb.done=!cb.done; cb.enabled=true; save();});
+}
+function renderCharDetail(){const c=activeChar(); const el=document.getElementById('charDetail'); if(!c){el.innerHTML='<div class="empty">캐릭터를 먼저 추가해줘</div>';return} const t=charTotals(c), l=links(c); el.innerHTML=`<div class="charCardHead"><div><h2>${c.name}</h2><div><span class="pill">${c.world||'월드 미입력'}</span><span class="pill">${c.job||'직업 미입력'}</span><span class="pill">Lv.${c.level||'-'}</span></div></div><div class="row"><button class="btn purple" id="editCurrent">수정</button><button class="btn ghost" id="delCurrent">삭제</button></div></div><div class="linkGrid"><a class="btn pink" target="_blank" href="${l.boss}">보스 효율</a><a class="btn blue" target="_blank" href="${l.info}">장비 정보</a><a class="btn green" target="_blank" href="${l.spec}">스펙업 순서</a></div><div class="summaryCards" style="margin-top:12px"><div class="summary"><span>주간 예상</span><b>${won(t.w)}</b></div><div class="summary"><span>완료</span><b>${won(t.d)}</b></div><div class="summary"><span>남은 예상</span><b>${won(t.remain)}</b></div><div class="summary"><span>월간 예상</span><b>${won(t.m)}</b></div></div>`; document.getElementById('editCurrent').onclick=()=>openChar(c); document.getElementById('delCurrent').onclick=()=>{if(confirm('삭제할까?')){state.characters=state.characters.filter(x=>x.id!==c.id);selected=state.characters[0]?.id||null;save();}}}
+function bossBaseName(name){return (name||'').replace(/\s*\([^)]*\)\s*$/,'').trim()}
+function bossDifficulty(name){const m=(name||'').match(/\(([^)]*)\)/); return m?m[1]:'기본'}
+function bossOrderRank(base){
+ const order=['매그너스','블러디 퀸','벨룸','파풀라투스','스우','데미안','가디언 엔젤 슬라임','루시드','윌','더스크','듄켈','진 힐라','검은 마법사','선택받은 세렌','감시자 칼로스','최초의 대적자','카링','찬란한 흉성','림보','발드릭스','유피테르'];
+ const alias={'하매':'매그너스','카퀸':'블러디 퀸','카벨':'벨룸','파풀':'파풀라투스','슬라임':'가디언 엔젤 슬라임','검마':'검은 마법사','세렌':'선택받은 세렌','칼로스':'감시자 칼로스','근원의 폭주':'찬란한 흉성','유니트르':'유피테르','키링':'카링','발드락스':'발드릭스'};
+ const key=alias[base]||base;
+ const idx=order.indexOf(key);
+ return idx<0?999:idx;
+}
+function setBossEnabled(c,bossId,on=true){ensureCharBosses(c); const b=state.bosses.find(x=>x.id===bossId); if(!b)return; const base=bossBaseName(b.name); c.bosses.forEach(cb=>{const bb=state.bosses.find(x=>x.id===cb.id); if(bb&&bossBaseName(bb.name)===base&&cb.id!==bossId){cb.enabled=false; cb.done=false;}}); const cb=c.bosses.find(x=>x.id===bossId); if(cb){cb.enabled=on; if(!on)cb.done=false; cb.price=cb.price??b.price; cb.party=cb.party||1;}}
+function openPriceEditor(bossId){
+ const b=state.bosses.find(x=>x.id===bossId); if(!b)return;
+ const current=Number(b.price)||0;
+ openModal('결정석 가격 수정',`<div class="field"><label>${bossBaseName(b.name)} ${bossDifficulty(b.name)}</label><input id="mPriceEdit" type="number" inputmode="numeric" value="${current}"></div><p class="muted small">가격 카드를 꾹 눌러 수정해요. 저장하면 모든 캐릭터의 같은 보스 가격에 반영돼요.</p><button class="btn ghost" id="restoreBossPrice" style="width:100%;margin-top:8px">기본값으로 복원</button>`, 'price', {bossId});
+ setTimeout(()=>document.getElementById('mPriceEdit')?.focus(),50);
+ const def=DEFAULT_BOSSES.find(x=>x.id===bossId);
+ document.getElementById('restoreBossPrice').onclick=()=>{ if(!def)return; document.getElementById('mPriceEdit').value=def.price; };
+}
+function attachLongPress(el,cb){
+ let timer=null, fired=false;
+ const start=(e)=>{fired=false; timer=setTimeout(()=>{fired=true; el.dataset.longPressed='1'; cb(e);},650)};
+ const cancel=()=>{if(timer)clearTimeout(timer); timer=null; setTimeout(()=>{if(fired)delete el.dataset.longPressed;},120)};
+ el.addEventListener('touchstart',start,{passive:true}); el.addEventListener('mousedown',start);
+ ['touchend','touchcancel','mouseup','mouseleave'].forEach(ev=>el.addEventListener(ev,cancel));
+}
+function renderBosses(){
+ const c=activeChar(), el=document.getElementById('bossList');
+ if(!c){el.innerHTML='<div class="empty">캐릭터를 먼저 추가해줘</div>';return}
+ ensureCharBosses(c);
+ let rows=state.bosses.map(b=>({b,cb:c.bosses.find(x=>x.id===b.id)})).filter(x=>x.b);
+ const grouped={};
+ rows.forEach(x=>{const base=bossBaseName(x.b.name); (grouped[base]??=[]).push(x);});
+ let groups=Object.keys(grouped).map(base=>{
+   const items=grouped[base].sort((a,b)=>effectivePrice(a.cb||{},a.b)-effectivePrice(b.cb||{},b.b));
+   const selectedItem=items.find(x=>x.cb?.enabled);
+   const min=Math.min(...items.map(x=>effectivePrice(x.cb||{},x.b)));
+   const max=Math.max(...items.map(x=>effectivePrice(x.cb||{},x.b)));
+   return {base,items,selectedItem,min,max,rank:bossOrderRank(base)};
+ });
+ const mainGroups=groups.filter(g=>g.rank!==999).sort((a,b)=>a.rank-b.rank || a.min-b.min);
+ const extraGroups=groups.filter(g=>g.rank===999).sort((a,b)=>a.min-b.min);
+ const selectedRows=(c.bosses||[]).map(cb=>({cb,b:state.bosses.find(x=>x.id===cb.id)})).filter(x=>x.b&&x.cb.enabled);
+ const selectedSum=selectedRows.reduce((sum,x)=>sum+effectivePrice(x.cb,x.b),0);
+ const compactMainNames=['매그너스','블러디 퀸','벨룸','파풀라투스'];
+ const compactExtraNames=['반반','피에르'];
+ const groupHtml=(g)=>`<div class="inlinePickGroup" data-inlinegroup="${g.base}"><div class="inlinePickHead"><span>${g.base}</span><span class="savedHint">${g.selectedItem?'선택: '+bossDifficulty(g.selectedItem.b.name):'미선택'}</span></div><div class="inlinePickBody">${g.items.map(({cb,b})=>{cb=cb||{id:b.id,enabled:false,done:false,price:b.price,party:1}; const sel=!!cb.enabled; const party=Number(cb.party||1)||1; const diff=bossDifficulty(b.name); return `<div class="inlinePickBtn ${sel?'selected':''}" data-enableboss="${b.id}"><b>${sel?'✓ ':''}${diff}</b>${sel?partyControlHtml(cb,b):`<span class="savedHint">${b.type==='monthly'?'월간':'주간'} · 1인당 ${won(effectivePrice(cb,b))}</span>`}</div>`}).join('')}</div></div>`;
+ const compactMain=mainGroups.filter(g=>compactMainNames.includes(g.base)&&g.items.length===1);
+ const normalMain=mainGroups.filter(g=>!(compactMainNames.includes(g.base)&&g.items.length===1));
+ const compactExtra=extraGroups.filter(g=>compactExtraNames.includes(g.base));
+ const normalExtra=extraGroups.filter(g=>!compactExtraNames.includes(g.base));
+ const mainHtml=`${compactMain.length?`<div class="compactPickGrid">${compactMain.map(groupHtml).join('')}</div>`:''}${normalMain.map(groupHtml).join('')}`;
+ const extraBody=`${compactExtra.length?`<div class="compactPickGrid">${compactExtra.map(groupHtml).join('')}</div>`:''}${normalExtra.map(groupHtml).join('')}`;
+ const extraHtml=extraGroups.length?`<details class="bossGroup"><summary><span>분류되지 않은 보스</span><span class="groupMeta">▼ ${extraGroups.length}개</span></summary><div class="bossGroupBody">${extraBody}</div></details>`:'';
+ el.innerHTML=groups.length?`<div class="inlinePickSummary">선택한 보스 ${selectedRows.length}개 · 기준 합계 ${won(selectedSum)}</div><div class="inlinePickList">${mainHtml}${extraHtml}</div>`:'<div class="empty">등록된 보스가 없어</div>';
+ document.querySelectorAll('[data-enableboss]').forEach(x=>{
+   attachLongPress(x,()=>openPriceEditor(x.dataset.enableboss));
+   x.onclick=(ev)=>{
+     if(ev.target.closest('[data-partyboss]')||ev.target.closest('[data-partyother]'))return;
+     if(x.dataset.longPressed==='1')return;
+     const id=x.dataset.enableboss; const cb=c.bosses.find(y=>y.id===id); if(!cb)return;
+     const y=window.scrollY;
+     setBossEnabled(c,id,!cb.enabled);
+     localStorage.setItem(LS,JSON.stringify(state));
+     render();
+     requestAnimationFrame(()=>window.scrollTo(0,y));
+   };
+ });
+ document.querySelectorAll('[data-partyboss]').forEach(btn=>btn.onclick=(ev)=>{
+   ev.stopPropagation();
+   const id=btn.dataset.partyboss; const cb=c.bosses.find(y=>y.id===id); if(!cb)return;
+   cb.party=Number(btn.dataset.party)||1; cb.enabled=true;
+   const y=window.scrollY;
+   localStorage.setItem(LS,JSON.stringify(state)); render(); requestAnimationFrame(()=>window.scrollTo(0,y));
+ });
+ document.querySelectorAll('[data-partyother]').forEach(sel=>{
+   sel.onclick=(ev)=>ev.stopPropagation();
+   sel.onchange=(ev)=>{
+     ev.stopPropagation();
+     const id=sel.dataset.partyother; const cb=c.bosses.find(y=>y.id===id); if(!cb||!sel.value)return;
+     cb.party=Number(sel.value)||3; cb.enabled=true;
+     const y=window.scrollY;
+     localStorage.setItem(LS,JSON.stringify(state)); render(); requestAnimationFrame(()=>window.scrollTo(0,y));
+   };
+ });
+}
+function renderBossPickerBody(){const c=state.characters.find(x=>x.id===pickerCharId); if(!c||!pickerDraft)return; const grouped={}; state.bosses.forEach(b=>{const base=bossBaseName(b.name); (grouped[base]??=[]).push(b);}); const names=Object.keys(grouped).sort((a,b)=>a.localeCompare(b,'ko')); document.getElementById('modalBody').innerHTML=`<p class="muted small">보스 이름별로 난이도 하나만 저장돼요. 선택해도 창은 닫히지 않고, 아래 저장을 눌러야 반영돼요.</p><div class="pickerCount" id="pickerCount">선택한 보스 ${pickerSelectedCount()}개 · 기준 합계 ${won(pickerSelectedSum())}</div><div class="bossPicker">${names.map(base=>{const items=grouped[base].sort((a,b)=>a.price-b.price); const selectedId=pickerDraft[base]; const selectedItem=items.find(b=>b.id===selectedId); return `<div class="pickGroup" data-pickgroup="${base}"><div class="pickHead"><span>${base}</span><span class="savedHint" data-pickhint>${selectedItem?'선택: '+bossDifficulty(selectedItem.name):'미선택'}</span></div><div class="pickBody">${items.map(b=>{const sel=pickerDraft[base]===b.id; const diff=bossDifficulty(b.name); return `<button class="pickBtn ${sel?'selected':''}" data-pickbase="${base}" data-pickboss="${b.id}" data-diff="${diff}"><b>${sel?'✓ ':''}${diff}</b><br><span class="savedHint">${b.type==='monthly'?'월간':'주간'} · ${won(b.price)}</span></button>`}).join('')}</div></div>`}).join('')}</div>`; document.querySelectorAll('[data-pickboss]').forEach(btn=>btn.onclick=()=>{const base=btn.dataset.pickbase; const id=btn.dataset.pickboss; pickerDraft[base]=pickerDraft[base]===id?null:id; updatePickerGroup(base);});}
+function openBossPicker(){const c=activeChar(); if(!c)return toast('캐릭터를 먼저 추가해줘'); ensureCharBosses(c); pickerCharId=c.id; pickerDraft={}; state.bosses.forEach(b=>{const base=bossBaseName(b.name); const cb=c.bosses.find(x=>x.id===b.id); if(cb?.enabled)pickerDraft[base]=b.id;}); openModal('잡는 보스 선택','', 'picker',{}); document.querySelector('.modalBox').classList.add('wide'); document.getElementById('saveModal').textContent='저장'; renderBossPickerBody();}
+function renderDash(){const el=document.getElementById('dashChars'); el.innerHTML=state.characters.length?`<table class="table"><tbody>${state.characters.map(c=>{const t=charTotals(c);return `<tr><td><b>${c.name}</b><br><span class="muted small">${c.job||'-'} · ${c.world||'-'}</span></td><td>주간 ${won(t.w)}</td><td>완료 ${won(t.d)}</td><td>${won(t.remain)}</td></tr>`}).join('')}</tbody></table>`:'<div class="empty">캐릭터를 추가하면 집계가 보여</div>';}
+function noticeCard(n){return `<div class="notice ${n.kind==='sunday'?'sunday':''}"><a href="${n.url||'#'}" target="_blank">${n.title}</a><div class="date">${n.date||''} · ${n.kind||'memo'}</div></div>`}
+function renderNotices(){const all=state.notices.filter(n=>n.kind!=='sunday'); const sundays=state.notices.filter(n=>n.kind==='sunday'||(n.title||'').includes('썬데이')); document.getElementById('noticeList').innerHTML=all.length?all.slice(0,40).map(noticeCard).join(''):'<div class="empty">감지된 일반 공지가 없어</div>'; document.getElementById('sundayList').innerHTML=sundays.length?sundays.slice(0,40).map(noticeCard).join(''):'<div class="empty">감지된 썬데이 메이플이 없어</div>'; document.getElementById('dashNotices').innerHTML=state.notices.slice(0,5).length?state.notices.slice(0,5).map(noticeCard).join(''):'<div class="empty">최근 알림 없음</div>';}
+function openModal(title,body,mode,payload){modalMode=mode;modalPayload=payload;document.getElementById('modalTitle').textContent=title;document.getElementById('modalBody').innerHTML=body;document.getElementById('saveModal').style.display='';document.getElementById('modal').classList.add('show')}
+function closeModal(){document.getElementById('modal').classList.remove('show');document.querySelector('.modalBox')?.classList.remove('wide');document.getElementById('saveModal').style.display='';document.getElementById('saveModal').textContent='저장'; pickerDraft=null; pickerCharId=null;}
+function openChar(c={}){openModal(c.id?'캐릭터 수정':'캐릭터 추가',`<div class="formGrid"><div class="field"><label>캐릭터명</label><input id="mName" value="${c.name||''}"></div><div class="field"><label>월드</label><input id="mWorld" value="${c.world||''}"></div><div class="field"><label>직업</label><input id="mJob" value="${c.job||''}"></div><div class="field"><label>레벨</label><input id="mLevel" value="${c.level||''}"></div></div><p class="muted small">캐릭터명만 있어도 Maplescouter 바로가기는 작동해요.</p>`, 'char', c)}
+function openBoss(){openModal('보스 추가',`<div class="formGrid"><div class="field"><label>보스명</label><input id="mBossName"></div><div class="field"><label>결정석 금액</label><input id="mBossPrice" type="number"></div><div class="field"><label>구분</label><select id="mBossType"><option value="weekly">주간</option><option value="monthly">월간</option></select></div></div>`, 'boss', {})}
+function addCharacterByName(name){name=(name||'').trim(); if(!name)return toast('캐릭터명을 입력해줘'); let found=state.characters.find(c=>c.name===name); if(found){selected=found.id; render(); return toast('이미 있는 캐릭터야');} const c={id:'c'+Date.now(),name,world:'',job:'',level:'',bosses:DEFAULT_BOSSES.map(b=>({id:b.id,enabled:false,done:false,price:b.price,party:1}))}; state.characters.push(c); selected=c.id; document.getElementById('quickCharName').value=''; save(); toast('캐릭터 추가 완료');}
+async function fetchCharacterInfo(c=activeChar()){ if(!c)return toast('캐릭터를 먼저 추가해줘'); if(!state.apiKey)return toast('API Key를 먼저 저장해줘'); try{const oc=await fetch('https://open.api.nexon.com/maplestory/v1/id?character_name='+encodeURIComponent(c.name),{headers:{'x-nxopen-api-key':state.apiKey}}).then(r=>r.json()); if(!oc.ocid) throw new Error('ocid 없음'); const basic=await fetch('https://open.api.nexon.com/maplestory/v1/character/basic?ocid='+encodeURIComponent(oc.ocid),{headers:{'x-nxopen-api-key':state.apiKey}}).then(r=>r.json()); c.world=basic.world_name||c.world; c.job=basic.character_class||c.job; c.level=basic.character_level||c.level; save(); toast('캐릭터 정보 조회 완료'); }catch(e){toast('조회 실패: 이름/API Key/CORS 확인');}}
+function resetBossPreset(){ if(!confirm('최신 결정석 가격표를 다시 적용할까? 선택한 보스/완료/파티 인원은 유지하고 가격만 새 기준으로 맞출게.'))return; const oldBosses=state.bosses||[]; state.characters.forEach(c=>{const oldCbs=c.bosses||[]; const oldCbByKey={}; oldCbs.forEach(cb=>{const ob=oldBosses.find(b=>b.id===cb.id); if(ob)oldCbByKey[bossKeyFromName(ob.name)]=cb;}); c.bosses=DEFAULT_BOSSES.map(b=>{const prev=oldCbByKey[bossKeyFromName(b.name)]; return {id:b.id,enabled:!!prev?.enabled,done:!!prev?.done,price:b.price,party:prev?.party||1};});}); state.bosses=DEFAULT_BOSSES.map(b=>({...b})); save(); toast('최신 결정석 가격표 적용 완료');}
+function enableCommonBosses(){
+ const c=activeChar();
+ if(!c)return toast('캐릭터를 먼저 추가해줘');
+ const common=[
+  '스우 (하드)',
+  '데미안 (하드)',
+  '윌 (하드)',
+  '가디언 엔젤 슬라임 (카오스)',
+  '루시드 (하드)',
+  '더스크 (카오스)',
+  '듄켈 (하드)',
+  '진 힐라 (하드)',
+  '선택받은 세렌 (하드)',
+  '감시자 칼로스 (이지)',
+  '최초의 대적자 (이지)',
+  '카링 (이지)'
+ ];
+ ensureCharBosses(c);
+ let applied=0;
+ common.forEach(name=>{
+   const b=state.bosses.find(x=>bossKeyFromName(x.name)===bossKeyFromName(name));
+   if(b){setBossEnabled(c,b.id,true); applied++;}
+ });
+ save();
+ toast(`${applied}개 주요 보스 선택 완료`);
+}
+
+function switchView(view){document.querySelectorAll('.view').forEach(x=>x.classList.remove('active')); const target=document.getElementById(view); if(target)target.classList.add('active'); document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.view===view)); document.getElementById('homeBtn')?.classList.toggle('active',view==='dashboard'); document.getElementById('menuBtn')?.classList.toggle('active',view==='settings');}
+document.getElementById('tabs').onclick=e=>{if(!e.target.dataset.view)return; switchView(e.target.dataset.view);};
+document.getElementById('homeBtn').onclick=()=>switchView('dashboard');
+document.getElementById('menuBtn').onclick=()=>switchView('settings');
+document.getElementById('addChar').onclick=()=>openChar(); document.getElementById('quickAddChar').onclick=()=>addCharacterByName(document.getElementById('quickCharName').value); document.getElementById('quickCharName').addEventListener('keydown',e=>{if(e.key==='Enter')addCharacterByName(e.target.value)}); document.getElementById('fetchCurrentChar').onclick=()=>fetchCharacterInfo(); document.getElementById('resetBossPreset').onclick=resetBossPreset; document.getElementById('enableCommonBosses').onclick=enableCommonBosses; document.getElementById('addBoss').onclick=openBossPicker; document.getElementById('cancelModal').onclick=closeModal; document.getElementById('saveModal').onclick=()=>{if(modalMode==='price'){const bossId=modalPayload.bossId; const val=Number(document.getElementById('mPriceEdit')?.value)||0; if(val<=0)return toast('가격을 입력해줘'); const b=state.bosses.find(x=>x.id===bossId); if(b){b.price=val; state.characters.forEach(c=>(c.bosses||[]).forEach(cb=>{if(cb.id===bossId)cb.price=val;}));} closeModal(); save(); toast('가격 수정 완료'); return;} if(modalMode==='picker'){const c=state.characters.find(x=>x.id===pickerCharId); if(!c||!pickerDraft)return closeModal(); ensureCharBosses(c); c.bosses.forEach(cb=>{const b=state.bosses.find(x=>x.id===cb.id); if(!b)return; const base=bossBaseName(b.name); cb.enabled=pickerDraft[base]===cb.id; if(!cb.enabled)cb.done=false; cb.price=cb.price??b.price; cb.party=cb.party||1;}); closeModal(); save(); toast('잡는 보스 저장 완료'); return;} if(modalMode==='char'){const c=modalPayload.id?state.characters.find(x=>x.id===modalPayload.id):{id:'c'+Date.now(),bosses:DEFAULT_BOSSES.map(b=>({id:b.id,enabled:false,done:false,price:b.price,party:1}))}; c.name=document.getElementById('mName').value.trim(); c.world=document.getElementById('mWorld').value.trim(); c.job=document.getElementById('mJob').value.trim(); c.level=document.getElementById('mLevel').value.trim(); if(!c.name)return toast('캐릭터명을 입력해줘'); if(!modalPayload.id)state.characters.push(c); selected=c.id; closeModal(); save(); toast('저장 완료');} if(modalMode==='boss'){const b={id:'b'+Date.now(),name:document.getElementById('mBossName').value.trim(),price:Number(document.getElementById('mBossPrice').value)||0,type:document.getElementById('mBossType').value}; if(!b.name)return toast('보스명을 입력해줘'); state.bosses.push(b); state.characters.forEach(c=>{ensureCharBosses(c); c.bosses.push({id:b.id,enabled:false,done:false,price:b.price,party:1})}); closeModal(); save();}};
+
+document.querySelectorAll('[data-notice-tab]').forEach(btn=>btn.onclick=()=>{document.querySelectorAll('.noticeTab,.noticePanel').forEach(x=>x.classList.remove('active')); btn.classList.add('active'); document.getElementById(btn.dataset.noticeTab==='sunday'?'sundayList':'noticeList').classList.add('active');});
+document.getElementById('resetWeek').onclick=()=>{state.characters.forEach(c=>(c.bosses||[]).forEach(cb=>{const b=state.bosses.find(x=>x.id===cb.id); if(b?.type==='weekly')cb.done=false;}));save();toast('주간 체크 초기화')};
+document.getElementById('saveApi').onclick=()=>{state.apiKey=document.getElementById('apiKey').value.trim();save();toast('API Key 저장 완료')};
+async function detectNotices(onlySunday=false){ if(!state.apiKey){toast('API Key를 먼저 저장해줘'); return;} try{const res=await fetch('https://open.api.nexon.com/maplestory/v1/notice',{headers:{'x-nxopen-api-key':state.apiKey}}); const data=await res.json(); const arr=data.notice||data.notices||[]; const keys=onlySunday?['썬데이']:['이벤트','점검','업데이트','캐시샵','썬데이']; let added=0; arr.forEach(n=>{const title=n.title||n.notice_title||''; if(keys.some(k=>title.includes(k))&&!state.notices.some(x=>x.title===title)){const isSunday=title.includes('썬데이'); state.notices.unshift({title,url:n.url||n.notice_url||'',date:n.date||n.notice_date||new Date().toISOString().slice(0,10),kind:isSunday?'sunday':'notice'});added++;}}); save(); toast(added?`${added}개 감지됨`:'새 알림 없음');}catch(e){toast('브라우저 호출 실패: Worker 프록시 필요 가능');}}
+document.getElementById('noticeBtn').onclick=()=>detectNotices(false); document.getElementById('sundayBtn').onclick=()=>detectNotices(true); document.getElementById('quickNotice').onclick=()=>detectNotices(false); document.getElementById('addManualNotice').onclick=()=>{const title=document.getElementById('manualNoticeTitle').value.trim(); if(!title)return toast('제목을 입력해줘'); state.notices.unshift({title,url:document.getElementById('manualNoticeUrl').value.trim(),date:new Date().toISOString().slice(0,10),kind:title.includes('썬데이')?'sunday':'memo'}); document.getElementById('manualNoticeTitle').value='';document.getElementById('manualNoticeUrl').value='';save();}; document.getElementById('clearNotices').onclick=()=>{if(confirm('알림을 모두 삭제할까?')){state.notices=[];save();}};
+function exportJson(){const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='maple-boss-sketch-backup.json';a.click();URL.revokeObjectURL(a.href)} document.getElementById('exportData').onclick=exportJson; document.getElementById('importData').onchange=e=>{const file=e.target.files[0]; if(!file)return; const r=new FileReader(); r.onload=()=>{try{state=JSON.parse(r.result);save();toast('가져오기 완료')}catch(err){toast('JSON 파일을 확인해줘')}}; r.readAsText(file)};
+if(!state.characters.length){state.characters=[{id:'c1',name:'썬슈슈',world:'',job:'',level:'',bosses:DEFAULT_BOSSES.map(b=>({id:b.id,enabled:false,done:false,price:b.price,party:1}))}]; selected='c1'; save();} else render();
+</script>
+</body>
+</html>
