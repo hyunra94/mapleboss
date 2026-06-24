@@ -151,8 +151,20 @@ function renderCharLists(){
  const bossHtml=state.characters.length?state.characters.map(c=>{const t=charTotals(c);const btn=`<button class="charBtn ${c.id===selected?'active':''}" data-sel="${c.id}"><div class="charName">${c.name}</div><div class="charMeta">${c.world||'-'} · ${c.job||'-'} · Lv.${c.level||'-'}</div><div class="charMoney">주간 ${won(t.w)} / 완료 ${won(t.d)}</div></button>`; return btn+selectedBossInline(c);}).join(''):'<div class="empty">캐릭터를 추가해줘</div>';
  document.getElementById('bossCharList').innerHTML=bossHtml;
  document.querySelectorAll('[data-sel]').forEach(b=>{
-   b.onclick=(ev)=>{if(ev.target.closest('a'))return; if(b.dataset.longPressed==='1')return; selected=b.dataset.sel;render();};
-   attachLongPress(b,()=>openCharacterMenu(b.dataset.sel));
+   b.onclick=(ev)=>{
+     if(ev.target.closest('a'))return;
+     if(b.dataset.longPressed==='1'){
+       ev.preventDefault();
+       ev.stopPropagation();
+       return;
+     }
+     selected=b.dataset.sel;
+     render();
+   };
+   attachLongPress(b,(ev)=>{
+     if(ev && ev.preventDefault) ev.preventDefault();
+     openCharacterMenu(b.dataset.sel);
+   });
  });
  document.querySelectorAll('[data-inlinecheck]').forEach(btn=>btn.onclick=(e)=>{e.stopPropagation(); const [cid,bid]=btn.dataset.inlinecheck.split('|'); const c=state.characters.find(x=>x.id===cid); if(!c)return; const cb=(c.bosses||[]).find(x=>x.id===bid); if(!cb)return; cb.done=!cb.done; cb.enabled=true; save();});
 }
@@ -176,11 +188,36 @@ function openPriceEditor(bossId){
  document.getElementById('restoreBossPrice').onclick=()=>{ if(!def)return; document.getElementById('mPriceEdit').value=def.price; };
 }
 function attachLongPress(el,cb){
- let timer=null, fired=false;
- const start=(e)=>{fired=false; timer=setTimeout(()=>{fired=true; el.dataset.longPressed='1'; cb(e);},650)};
- const cancel=()=>{if(timer)clearTimeout(timer); timer=null; setTimeout(()=>{if(fired)delete el.dataset.longPressed;},120)};
- el.addEventListener('touchstart',start,{passive:true}); el.addEventListener('mousedown',start);
- ['touchend','touchcancel','mouseup','mouseleave'].forEach(ev=>el.addEventListener(ev,cancel));
+ let timer=null;
+ let fired=false;
+ let down=false;
+ const start=(e)=>{
+   if(e.target.closest('a,button,input,select,textarea')) return;
+   down=true;
+   fired=false;
+   if(timer) clearTimeout(timer);
+   timer=setTimeout(()=>{
+     if(!down) return;
+     fired=true;
+     el.dataset.longPressed='1';
+     if(e.cancelable) e.preventDefault();
+     cb(e);
+   },650);
+ };
+ const end=(e)=>{
+   down=false;
+   if(timer) clearTimeout(timer);
+   timer=null;
+   if(fired){
+     if(e && e.cancelable) e.preventDefault();
+     setTimeout(()=>{delete el.dataset.longPressed;},350);
+   }
+ };
+ el.addEventListener('pointerdown',start);
+ el.addEventListener('pointerup',end);
+ el.addEventListener('pointercancel',end);
+ el.addEventListener('pointerleave',end);
+ el.addEventListener('contextmenu',(e)=>{e.preventDefault(); cb(e);});
 }
 function renderBosses(){
  const c=activeChar(), el=document.getElementById('bossList');
