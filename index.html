@@ -28,8 +28,8 @@
     .dashGrid{display:grid;grid-template-columns:1.2fr .8fr;gap:14px}.summaryCards{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.summary{border:2px dashed var(--line);border-radius:18px;background:#fffdf5;padding:13px}.summary span{display:block;font-size:12px;color:var(--muted);font-weight:900}.summary b{font-size:24px}.noticeTabs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:8px 0 12px}.noticeTab{border:2px solid var(--line);border-radius:16px;background:#fffdf5;padding:10px;font-weight:1000;box-shadow:var(--soft)}.noticeTab.active{background:var(--blue)}.noticePanel{display:none}.noticePanel.active{display:grid;gap:8px}.notice{border:2px dashed var(--line);border-radius:16px;background:#fffdf5;padding:10px}.notice.sunday{background:#fff6cf}.notice a{font-weight:1000}.notice .date{font-size:12px;color:var(--muted);font-weight:900}.empty{border:2px dashed var(--line);border-radius:18px;background:rgba(255,255,255,.45);padding:26px;text-align:center;color:var(--muted);font-weight:950}.table{width:100%;border-collapse:separate;border-spacing:0 8px}.table td,.table th{text-align:left;padding:10px;border-top:2px solid var(--line);border-bottom:2px solid var(--line);background:#fffdf5}.table td:first-child,.table th:first-child{border-left:2px solid var(--line);border-radius:14px 0 0 14px}.table td:last-child,.table th:last-child{border-right:2px solid var(--line);border-radius:0 14px 14px 0;text-align:right}
 
     .bossGroup{border:2px solid var(--line);border-radius:18px;background:#fffdf5;box-shadow:var(--soft);overflow:hidden}.bossGroup summary{list-style:none;cursor:pointer;padding:13px 14px;font-weight:1000;display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center}.bossGroup summary::-webkit-details-marker{display:none}.bossGroup[open] summary{background:var(--yellow)}.groupMeta{font-size:12px;color:var(--muted);font-weight:900}.bossGroupBody{display:grid;gap:8px;padding:10px;border-top:2px dashed var(--line)}
-    .modal{position:fixed;inset:0;background:rgba(41,35,30,.38);display:none;place-items:center;padding:16px;z-index:30}.modal.show{display:grid}.modalBox{width:min(620px,100%);padding:17px}.modalBox.wide{width:min(860px,100%)}.actions{display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap;margin-top:12px}.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--ink);color:#fffaf0;border-radius:999px;padding:11px 16px;font-weight:1000;display:none;z-index:50}.toast.show{display:block}
-    .bossPicker{max-height:62vh;overflow:auto;padding-right:4px;display:grid;gap:8px}.pickGroup{border:2px solid var(--line);border-radius:16px;background:#fffdf5;box-shadow:var(--soft);overflow:hidden}.pickHead{padding:11px 12px;background:#fffaf0;font-weight:1000;display:flex;justify-content:space-between;gap:8px}.pickBody{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;padding:10px;border-top:2px dashed var(--line)}.pickBtn{border:2px solid var(--line);border-radius:14px;background:#fff;padding:10px;text-align:left;font-weight:950;box-shadow:var(--soft)}.pickBtn.selected{background:var(--green)}.pickBtn[disabled]{opacity:.45;filter:grayscale(.2)}.savedHint{font-size:12px;color:var(--muted);font-weight:900}.inlinePickSummary{border:2px dashed var(--line);border-radius:18px;background:#fffdf5;padding:12px 14px;font-weight:1000;font-size:18px;margin:8px 0 12px}.inlinePickList{display:grid;gap:10px}.inlinePickGroup{border:2px solid var(--line);border-radius:18px;background:#fffdf5;box-shadow:var(--soft);overflow:hidden}.inlinePickHead{padding:12px 14px;font-weight:1000;display:flex;justify-content:space-between;gap:8px}.inlinePickBody{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;padding:10px;border-top:2px dashed var(--line)}.inlinePickBtn{border:2px solid var(--line);border-radius:15px;background:#fff;padding:12px;text-align:left;font-weight:1000;box-shadow:var(--soft);font-size:17px}.inlinePickBtn.selected{background:var(--green)}.inlinePickBtn .savedHint{display:block;margin-top:4px}.compactPickGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.compactPickGrid .inlinePickBody{grid-template-columns:1fr}.compactPickGrid .inlinePickHead{padding:10px 12px}.compactPickGrid .inlinePickBtn{font-size:15px;padding:10px}.partyChips{display:flex;gap:6px;flex-wrap:nowrap;margin-top:8px;align-items:center}.partyChip{border:2px solid var(--line);border-radius:999px;background:#fffdf5;padding:5px 9px;font-size:12px;font-weight:1000;box-shadow:var(--soft);width:auto;min-width:0}.partyChip.active{background:var(--blue)}select.partyChip{appearance:auto;text-align:center;max-width:82px}.progressWrap{margin-top:8px;border:2px dashed var(--line);border-radius:999px;background:#fffdf5;overflow:hidden;height:16px}.progressBar{height:100%;background:var(--green);width:0%;transition:width .18s ease}.progressText{font-size:11px;color:var(--muted);font-weight:900;margin-top:4px}
+    .modal{position:fixed;inset:0;background:rgba(41,35,30,.38);display:none;place-items:center;padding:16px;z-index:30}.modal.show{display:grid}.modalBox{width:min(620px,100%);padding:0;max-height:min(86vh,820px);display:flex;flex-direction:column}.modalBox.wide{width:min(860px,100%)}.modalHead{position:sticky;top:0;z-index:2;background:rgba(255,250,240,.96);border-bottom:2px dashed var(--line);padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px}.modalHead h2{margin:0}.modalX{width:38px;height:38px;border:2px solid var(--line);border-radius:14px;background:#fffdf5;font-weight:1000;box-shadow:var(--soft)}#modalBody{overflow:auto;padding:16px}.actions{position:sticky;bottom:0;z-index:2;background:rgba(255,250,240,.96);border-top:2px dashed var(--line);display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap;margin-top:0;padding:12px 16px}.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--ink);color:#fffaf0;border-radius:999px;padding:11px 16px;font-weight:1000;display:none;z-index:50}.toast.show{display:block}
+    .bossPicker{max-height:62vh;overflow:auto;padding-right:4px;display:grid;gap:8px}.pickGroup{border:2px solid var(--line);border-radius:16px;background:#fffdf5;box-shadow:var(--soft);overflow:hidden}.pickHead{padding:11px 12px;background:#fffaf0;font-weight:1000;display:flex;justify-content:space-between;gap:8px}.pickBody{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;padding:10px;border-top:2px dashed var(--line)}.pickBtn{border:2px solid var(--line);border-radius:14px;background:#fff;padding:10px;text-align:left;font-weight:950;box-shadow:var(--soft)}.pickBtn.selected{background:var(--green)}.pickBtn[disabled]{opacity:.45;filter:grayscale(.2)}.savedHint{font-size:12px;color:var(--muted);font-weight:900}.inlinePickSummary{border:2px dashed var(--line);border-radius:18px;background:#fffdf5;padding:12px 14px;font-weight:1000;font-size:18px;margin:8px 0 12px}.inlinePickList{display:grid;gap:10px}.inlinePickGroup{border:2px solid var(--line);border-radius:18px;background:#fffdf5;box-shadow:var(--soft);overflow:hidden}.inlinePickHead{padding:12px 14px;font-weight:1000;display:flex;justify-content:space-between;gap:8px}.inlinePickBody{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;padding:10px;border-top:2px dashed var(--line)}.inlinePickBtn{border:2px solid var(--line);border-radius:15px;background:#fff;padding:12px;text-align:left;font-weight:1000;box-shadow:var(--soft);font-size:17px}.inlinePickBtn.selected{background:var(--green)}.inlinePickBtn .savedHint{display:block;margin-top:4px}.compactPickGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.compactPickGrid .inlinePickBody{grid-template-columns:1fr}.compactPickGrid .inlinePickHead{padding:10px 12px}.compactPickGrid .inlinePickBtn{font-size:15px;padding:10px}.partyChips{display:flex;gap:6px;flex-wrap:nowrap;margin-top:8px;align-items:center}.partyChip{border:2px solid var(--line);border-radius:999px;background:#fffdf5;padding:5px 9px;font-size:12px;font-weight:1000;box-shadow:var(--soft);width:auto;min-width:0}.partyChip.active{background:var(--blue)}select.partyChip{appearance:auto;text-align:center;max-width:78px}.modal .partyChips{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}.modal .partyChip{padding:5px 6px;text-align:center}.progressWrap{margin-top:8px;border:2px dashed var(--line);border-radius:999px;background:#fffdf5;overflow:hidden;height:16px}.progressBar{height:100%;background:var(--green);width:0%;transition:width .18s ease}.progressText{font-size:11px;color:var(--muted);font-weight:900;margin-top:4px}
     @media(max-width:900px){.hero{grid-template-columns:auto 1fr auto}.grid,.dashGrid{grid-template-columns:1fr}.miniStats,.summaryCards{grid-template-columns:repeat(2,1fr)}.bossToolbar{grid-template-columns:1fr}.bossItem{grid-template-columns:32px 1fr}.bossItem input,.bossItem select,.bossItem .iconBtn{grid-column:2}.linkGrid{grid-template-columns:1fr}.formGrid{grid-template-columns:1fr}.charGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.miniLinks{grid-template-columns:repeat(3,1fr)}}
   .smallDone{margin-top:6px;padding:5px 8px;font-size:11px}.bossItem.selectedBoss{background:rgba(244,211,109,.18)}
   </style>
@@ -60,7 +60,7 @@
 /ko/spec-order?name=캐릭터명&preset=00000</pre></div></div></section>
 </div>
 
-<div class="modal" id="modal"><div class="modalBox"><h2 id="modalTitle">편집</h2><div id="modalBody"></div><div class="actions"><button class="btn ghost" id="cancelModal">취소</button><button class="btn primary" id="saveModal">저장</button></div></div></div><div class="toast" id="toast"></div>
+<div class="modal" id="modal"><div class="modalBox"><div class="modalHead"><h2 id="modalTitle">편집</h2><button class="modalX" id="closeModalX" title="닫기">×</button></div><div id="modalBody"></div><div class="actions"><button class="btn ghost" id="cancelModal">취소</button><button class="btn primary" id="saveModal">저장</button></div></div></div><div class="toast" id="toast"></div>
 <script>
 const LS='mapleBossSketchV5';
 const WORKER_URL='https://mapleboss.hyunra94.workers.dev';
@@ -173,9 +173,8 @@ function renderCharLists(){
    e.preventDefault();
    e.stopPropagation();
    selected=btn.dataset.bossmenu;
-   bossPickerVisible=true;
    render();
-   requestAnimationFrame(()=>document.getElementById('bossList')?.scrollIntoView({behavior:'smooth',block:'start'}));
+   openBossSelectModal(btn.dataset.bossmenu);
  });
  document.querySelectorAll('[data-inlinecheck]').forEach(btn=>btn.onclick=(e)=>{e.stopPropagation(); const [cid,bid]=btn.dataset.inlinecheck.split('|'); const c=state.characters.find(x=>x.id===cid); if(!c)return; const cb=(c.bosses||[]).find(x=>x.id===bid); if(!cb)return; cb.done=!cb.done; cb.enabled=true; save();});
 }
@@ -291,6 +290,90 @@ function renderBosses(){
    };
  });
 }
+
+function partyControlHtmlDraft(bossId, party, price, type){
+  party=Number(party||1)||1;
+  const cb={price,party};
+  const b={price,type};
+  const otherVal=party>=3?String(party):'';
+  return `<span class="savedHint">${party}인 파티 · 1인당 ${won(effectivePrice(cb,b))}</span><div class="partyChips"><button class="partyChip ${party===1?'active':''}" data-mdpartyboss="${bossId}" data-party="1">1인</button><button class="partyChip ${party===2?'active':''}" data-mdpartyboss="${bossId}" data-party="2">2인</button><select class="partyChip ${party>=3?'active':''}" data-mdpartyother="${bossId}"><option value="" ${!otherVal?'selected':''}>기타 ▼</option><option value="3" ${otherVal==='3'?'selected':''}>3인</option><option value="4" ${otherVal==='4'?'selected':''}>4인</option><option value="5" ${otherVal==='5'?'selected':''}>5인</option><option value="6" ${otherVal==='6'?'selected':''}>6인</option></select></div>`;
+}
+function openBossSelectModal(charId){
+  const c=state.characters.find(x=>x.id===charId);
+  if(!c)return toast('캐릭터를 먼저 추가해줘');
+  ensureCharBosses(c);
+  pickerCharId=c.id;
+  pickerDraft={selectedByBase:{},partyById:{}};
+  state.bosses.forEach(b=>{
+    const cb=c.bosses.find(x=>x.id===b.id);
+    const base=bossBaseName(b.name);
+    if(cb?.enabled) pickerDraft.selectedByBase[base]=b.id;
+    pickerDraft.partyById[b.id]=cb?.party||1;
+  });
+  openModal(`${c.name} 보스 설정`,'','bossSelect',{});
+  document.querySelector('.modalBox').classList.add('wide');
+  document.getElementById('saveModal').textContent='저장';
+  renderBossSelectModalBody();
+}
+function bossModalGroups(){
+ const c=state.characters.find(x=>x.id===pickerCharId);
+ if(!c)return [];
+ ensureCharBosses(c);
+ let rows=state.bosses.map(b=>({b,cb:c.bosses.find(x=>x.id===b.id)})).filter(x=>x.b);
+ const grouped={};
+ rows.forEach(x=>{const base=bossBaseName(x.b.name); (grouped[base]??=[]).push(x);});
+ return Object.keys(grouped).map(base=>{
+   const items=grouped[base].sort((a,b)=>Number(a.b.price)-Number(b.b.price));
+   const selectedId=pickerDraft?.selectedByBase?.[base];
+   const selectedItem=items.find(x=>x.b.id===selectedId);
+   const min=Math.min(...items.map(x=>Number(x.b.price)||0));
+   return {base,items,selectedItem,min,rank:bossOrderRank(base)};
+ });
+}
+function renderBossSelectModalBody(keepScroll=false){
+ const body=document.getElementById('modalBody');
+ const oldTop=keepScroll?body.scrollTop:0;
+ const groups=bossModalGroups();
+ const selectedRows=groups.flatMap(g=>g.items.filter(x=>pickerDraft.selectedByBase[g.base]===x.b.id));
+ const selectedSum=selectedRows.reduce((sum,x)=>{
+   const party=pickerDraft.partyById[x.b.id]||1;
+   return sum+effectivePrice({price:x.b.price,party},x.b);
+ },0);
+ const compactMainNames=['매그너스','블러디 퀸','벨룸','파풀라투스'];
+ const compactExtraNames=['반반','피에르'];
+ const mainGroups=groups.filter(g=>g.rank!==999).sort((a,b)=>a.rank-b.rank || a.min-b.min);
+ const extraGroups=groups.filter(g=>g.rank===999).sort((a,b)=>a.min-b.min);
+ const groupHtml=(g)=>`<div class="inlinePickGroup" data-mdgroup="${g.base}"><div class="inlinePickHead"><span>${g.base}</span><span class="savedHint">${g.selectedItem?'선택: '+bossDifficulty(g.selectedItem.b.name):'미선택'}</span></div><div class="inlinePickBody">${g.items.map(({b})=>{const sel=pickerDraft.selectedByBase[g.base]===b.id; const party=pickerDraft.partyById[b.id]||1; const diff=bossDifficulty(b.name); return `<div class="inlinePickBtn ${sel?'selected':''}" data-mdenableboss="${b.id}" data-mdbase="${g.base}"><b>${sel?'✓ ':''}${diff}</b>${sel?partyControlHtmlDraft(b.id,party,b.price,b.type):`<span class="savedHint">${b.type==='monthly'?'월간':'주간'} · 1인당 ${won(b.price)}</span>`}</div>`}).join('')}</div></div>`;
+ const compactMain=mainGroups.filter(g=>compactMainNames.includes(g.base)&&g.items.length===1);
+ const normalMain=mainGroups.filter(g=>!(compactMainNames.includes(g.base)&&g.items.length===1));
+ const compactExtra=extraGroups.filter(g=>compactExtraNames.includes(g.base));
+ const normalExtra=extraGroups.filter(g=>!compactExtraNames.includes(g.base));
+ const mainHtml=`${compactMain.length?`<div class="compactPickGrid">${compactMain.map(groupHtml).join('')}</div>`:''}${normalMain.map(groupHtml).join('')}`;
+ const extraBody=`${compactExtra.length?`<div class="compactPickGrid">${compactExtra.map(groupHtml).join('')}</div>`:''}${normalExtra.map(groupHtml).join('')}`;
+ const extraHtml=extraGroups.length?`<details class="bossGroup"><summary><span>분류되지 않은 보스</span><span class="groupMeta">▼ ${extraGroups.length}개</span></summary><div class="bossGroupBody">${extraBody}</div></details>`:'';
+ body.innerHTML=`<div class="inlinePickSummary">선택한 보스 ${selectedRows.length}개 · 기준 합계 ${won(selectedSum)}</div><div class="inlinePickList">${mainHtml}${extraHtml}</div>`;
+ body.querySelectorAll('[data-mdenableboss]').forEach(x=>{
+   attachLongPress(x,()=>openPriceEditor(x.dataset.mdenableboss));
+   x.onclick=(ev)=>{
+     if(ev.target.closest('[data-mdpartyboss]')||ev.target.closest('[data-mdpartyother]'))return;
+     if(x.dataset.longPressed==='1')return;
+     const id=x.dataset.mdenableboss, base=x.dataset.mdbase;
+     pickerDraft.selectedByBase[base]=pickerDraft.selectedByBase[base]===id?null:id;
+     if(!pickerDraft.partyById[id]) pickerDraft.partyById[id]=1;
+     renderBossSelectModalBody(true);
+   };
+ });
+ body.querySelectorAll('[data-mdpartyboss]').forEach(btn=>btn.onclick=(ev)=>{
+   ev.stopPropagation();
+   pickerDraft.partyById[btn.dataset.mdpartyboss]=Number(btn.dataset.party)||1;
+   renderBossSelectModalBody(true);
+ });
+ body.querySelectorAll('[data-mdpartyother]').forEach(sel=>{
+   sel.onclick=(ev)=>ev.stopPropagation();
+   sel.onchange=(ev)=>{ev.stopPropagation(); if(!sel.value)return; pickerDraft.partyById[sel.dataset.mdpartyother]=Number(sel.value)||3; renderBossSelectModalBody(true);};
+ });
+ if(keepScroll) requestAnimationFrame(()=>{body.scrollTop=oldTop;});
+}
 function renderBossPickerBody(){const c=state.characters.find(x=>x.id===pickerCharId); if(!c||!pickerDraft)return; const grouped={}; state.bosses.forEach(b=>{const base=bossBaseName(b.name); (grouped[base]??=[]).push(b);}); const names=Object.keys(grouped).sort((a,b)=>a.localeCompare(b,'ko')); document.getElementById('modalBody').innerHTML=`<p class="muted small">보스 이름별로 난이도 하나만 저장돼요. 선택해도 창은 닫히지 않고, 아래 저장을 눌러야 반영돼요.</p><div class="pickerCount" id="pickerCount">선택한 보스 ${pickerSelectedCount()}개 · 기준 합계 ${won(pickerSelectedSum())}</div><div class="bossPicker">${names.map(base=>{const items=grouped[base].sort((a,b)=>a.price-b.price); const selectedId=pickerDraft[base]; const selectedItem=items.find(b=>b.id===selectedId); return `<div class="pickGroup" data-pickgroup="${base}"><div class="pickHead"><span>${base}</span><span class="savedHint" data-pickhint>${selectedItem?'선택: '+bossDifficulty(selectedItem.name):'미선택'}</span></div><div class="pickBody">${items.map(b=>{const sel=pickerDraft[base]===b.id; const diff=bossDifficulty(b.name); return `<button class="pickBtn ${sel?'selected':''}" data-pickbase="${base}" data-pickboss="${b.id}" data-diff="${diff}"><b>${sel?'✓ ':''}${diff}</b><br><span class="savedHint">${b.type==='monthly'?'월간':'주간'} · ${won(b.price)}</span></button>`}).join('')}</div></div>`}).join('')}</div>`; document.querySelectorAll('[data-pickboss]').forEach(btn=>btn.onclick=()=>{const base=btn.dataset.pickbase; const id=btn.dataset.pickboss; pickerDraft[base]=pickerDraft[base]===id?null:id; updatePickerGroup(base);});}
 function openBossPicker(){const c=activeChar(); if(!c)return toast('캐릭터를 먼저 추가해줘'); ensureCharBosses(c); pickerCharId=c.id; pickerDraft={}; state.bosses.forEach(b=>{const base=bossBaseName(b.name); const cb=c.bosses.find(x=>x.id===b.id); if(cb?.enabled)pickerDraft[base]=b.id;}); openModal('잡는 보스 선택','', 'picker',{}); document.querySelector('.modalBox').classList.add('wide'); document.getElementById('saveModal').textContent='저장'; renderBossPickerBody();}
 function renderDash(){const el=document.getElementById('dashChars'); el.innerHTML=state.characters.length?`<table class="table"><tbody>${state.characters.map(c=>{const t=charTotals(c);return `<tr><td><b>${c.name}</b><br><span class="muted small">${c.job||'-'} · ${c.world||'-'}</span></td><td>주간 ${won(t.w)}</td><td>완료 ${won(t.d)}</td><td>${won(t.remain)}</td></tr>`}).join('')}</tbody></table>`:'<div class="empty">캐릭터를 추가하면 집계가 보여</div>';}
@@ -342,7 +425,7 @@ function switchView(view){document.querySelectorAll('.view').forEach(x=>x.classL
 document.getElementById('tabs').onclick=e=>{if(!e.target.dataset.view)return; switchView(e.target.dataset.view);};
 document.getElementById('homeBtn').onclick=()=>switchView('dashboard');
 document.getElementById('menuBtn').onclick=()=>switchView('settings');
-document.getElementById('addChar').onclick=()=>openChar(); document.getElementById('quickAddChar').onclick=()=>addCharacterByName(document.getElementById('quickCharName').value); document.getElementById('quickCharName').addEventListener('keydown',e=>{if(e.key==='Enter')addCharacterByName(e.target.value)}); document.getElementById('fetchCurrentChar').onclick=()=>fetchCharacterInfo(); document.getElementById('resetBossPreset').onclick=resetBossPreset; document.getElementById('enableCommonBosses').onclick=enableCommonBosses; document.getElementById('addBoss').onclick=openBossPicker; document.getElementById('cancelModal').onclick=closeModal; document.getElementById('saveModal').onclick=()=>{if(modalMode==='price'){const bossId=modalPayload.bossId; const val=Number(document.getElementById('mPriceEdit')?.value)||0; if(val<=0)return toast('가격을 입력해줘'); const b=state.bosses.find(x=>x.id===bossId); if(b){b.price=val; state.characters.forEach(c=>(c.bosses||[]).forEach(cb=>{if(cb.id===bossId)cb.price=val;}));} closeModal(); save(); toast('가격 수정 완료'); return;} if(modalMode==='picker'){const c=state.characters.find(x=>x.id===pickerCharId); if(!c||!pickerDraft)return closeModal(); ensureCharBosses(c); c.bosses.forEach(cb=>{const b=state.bosses.find(x=>x.id===cb.id); if(!b)return; const base=bossBaseName(b.name); cb.enabled=pickerDraft[base]===cb.id; if(!cb.enabled)cb.done=false; cb.price=cb.price??b.price; cb.party=cb.party||1;}); closeModal(); save(); toast('잡는 보스 저장 완료'); return;} if(modalMode==='char'){const c=modalPayload.id?state.characters.find(x=>x.id===modalPayload.id):{id:'c'+Date.now(),bosses:DEFAULT_BOSSES.map(b=>({id:b.id,enabled:false,done:false,price:b.price,party:1}))}; c.name=document.getElementById('mName').value.trim(); c.world=document.getElementById('mWorld').value.trim(); c.job=document.getElementById('mJob').value.trim(); c.level=document.getElementById('mLevel').value.trim(); if(!c.name)return toast('캐릭터명을 입력해줘'); if(!modalPayload.id)state.characters.push(c); selected=c.id; closeModal(); save(); toast('저장 완료');} if(modalMode==='boss'){const b={id:'b'+Date.now(),name:document.getElementById('mBossName').value.trim(),price:Number(document.getElementById('mBossPrice').value)||0,type:document.getElementById('mBossType').value}; if(!b.name)return toast('보스명을 입력해줘'); state.bosses.push(b); state.characters.forEach(c=>{ensureCharBosses(c); c.bosses.push({id:b.id,enabled:false,done:false,price:b.price,party:1})}); closeModal(); save();}};
+document.getElementById('addChar').onclick=()=>openChar(); document.getElementById('quickAddChar').onclick=()=>addCharacterByName(document.getElementById('quickCharName').value); document.getElementById('quickCharName').addEventListener('keydown',e=>{if(e.key==='Enter')addCharacterByName(e.target.value)}); document.getElementById('fetchCurrentChar').onclick=()=>fetchCharacterInfo(); document.getElementById('resetBossPreset').onclick=resetBossPreset; document.getElementById('enableCommonBosses').onclick=enableCommonBosses; document.getElementById('addBoss').onclick=openBossPicker; document.getElementById('cancelModal').onclick=closeModal; document.getElementById('closeModalX').onclick=closeModal; document.getElementById('saveModal').onclick=()=>{if(modalMode==='price'){const bossId=modalPayload.bossId; const val=Number(document.getElementById('mPriceEdit')?.value)||0; if(val<=0)return toast('가격을 입력해줘'); const b=state.bosses.find(x=>x.id===bossId); if(b){b.price=val; state.characters.forEach(c=>(c.bosses||[]).forEach(cb=>{if(cb.id===bossId)cb.price=val;}));} closeModal(); save(); toast('가격 수정 완료'); return;} if(modalMode==='bossSelect'){const c=state.characters.find(x=>x.id===pickerCharId); if(!c||!pickerDraft)return closeModal(); ensureCharBosses(c); c.bosses.forEach(cb=>{const b=state.bosses.find(x=>x.id===cb.id); if(!b)return; const base=bossBaseName(b.name); cb.enabled=pickerDraft.selectedByBase[base]===cb.id; if(!cb.enabled)cb.done=false; cb.price=cb.price??b.price; cb.party=pickerDraft.partyById[cb.id]||cb.party||1;}); bossPickerVisible=false; closeModal(); save(); toast('보스 설정 저장 완료'); return;} if(modalMode==='picker'){const c=state.characters.find(x=>x.id===pickerCharId); if(!c||!pickerDraft)return closeModal(); ensureCharBosses(c); c.bosses.forEach(cb=>{const b=state.bosses.find(x=>x.id===cb.id); if(!b)return; const base=bossBaseName(b.name); cb.enabled=pickerDraft[base]===cb.id; if(!cb.enabled)cb.done=false; cb.price=cb.price??b.price; cb.party=cb.party||1;}); closeModal(); save(); toast('잡는 보스 저장 완료'); return;} if(modalMode==='char'){const c=modalPayload.id?state.characters.find(x=>x.id===modalPayload.id):{id:'c'+Date.now(),bosses:DEFAULT_BOSSES.map(b=>({id:b.id,enabled:false,done:false,price:b.price,party:1}))}; c.name=document.getElementById('mName').value.trim(); c.world=document.getElementById('mWorld').value.trim(); c.job=document.getElementById('mJob').value.trim(); c.level=document.getElementById('mLevel').value.trim(); if(!c.name)return toast('캐릭터명을 입력해줘'); if(!modalPayload.id)state.characters.push(c); selected=c.id; closeModal(); save(); toast('저장 완료');} if(modalMode==='boss'){const b={id:'b'+Date.now(),name:document.getElementById('mBossName').value.trim(),price:Number(document.getElementById('mBossPrice').value)||0,type:document.getElementById('mBossType').value}; if(!b.name)return toast('보스명을 입력해줘'); state.bosses.push(b); state.characters.forEach(c=>{ensureCharBosses(c); c.bosses.push({id:b.id,enabled:false,done:false,price:b.price,party:1})}); closeModal(); save();}};
 
 document.querySelectorAll('[data-notice-tab]').forEach(btn=>btn.onclick=()=>{document.querySelectorAll('.noticeTab,.noticePanel').forEach(x=>x.classList.remove('active')); btn.classList.add('active'); const map={notice:'noticeList',event:'eventList',sunday:'sundayList'}; document.getElementById(map[btn.dataset.noticeTab]||'noticeList').classList.add('active');});
 document.getElementById('resetWeek').onclick=()=>{state.characters.forEach(c=>(c.bosses||[]).forEach(cb=>{const b=state.bosses.find(x=>x.id===cb.id); if(b?.type==='weekly')cb.done=false;}));save();toast('주간 체크 초기화')};
