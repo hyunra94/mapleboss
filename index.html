@@ -64,6 +64,7 @@
 <script>
 const LS='mapleBossSketchV5';
 const WORKER_URL='https://mapleboss.hyunra94.workers.dev';
+const NOTICE_CACHE_MS=30*60*1000; // 알림/이벤트 자동 갱신 캐시: 30분
 const BOSS_PRESET_RAW=[
  ['매그너스 (하드)',8560000,'weekly'],
  ['블러디 퀸 (카오스)',8080000,'weekly'],
@@ -337,7 +338,7 @@ function enableCommonBosses(){
  toast(`${applied}개 주요 보스 선택 완료`);
 }
 
-function switchView(view){document.querySelectorAll('.view').forEach(x=>x.classList.remove('active')); const target=document.getElementById(view); if(target)target.classList.add('active'); document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.view===view)); document.getElementById('homeBtn')?.classList.toggle('active',view==='dashboard'); document.getElementById('menuBtn')?.classList.toggle('active',view==='settings');}
+function switchView(view){document.querySelectorAll('.view').forEach(x=>x.classList.remove('active')); const target=document.getElementById(view); if(target)target.classList.add('active'); document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.view===view)); document.getElementById('homeBtn')?.classList.toggle('active',view==='dashboard'); document.getElementById('menuBtn')?.classList.toggle('active',view==='settings'); if(view==='notices'||view==='dashboard') autoRefreshFeeds();}
 document.getElementById('tabs').onclick=e=>{if(!e.target.dataset.view)return; switchView(e.target.dataset.view);};
 document.getElementById('homeBtn').onclick=()=>switchView('dashboard');
 document.getElementById('menuBtn').onclick=()=>switchView('settings');
@@ -357,8 +358,62 @@ function normalizeFeed(data){
 function feedTitle(n){return n.title||n.notice_title||n.event_title||n.noticeTitle||n.eventTitle||n.name||'';}
 function feedUrl(n){return n.url||n.notice_url||n.event_url||n.noticeUrl||n.eventUrl||n.link||'';}
 function feedDate(n){return n.date||n.notice_date||n.event_date||n.start_date||n.event_start_date||n.startDate||n.end_date||new Date().toISOString().slice(0,10);}
-async function detectNotices(mode='notice'){ try{const endpoint=mode==='notice'?'/api/notices':'/api/events'; const res=await fetch(`${WORKER_URL}${endpoint}`); const data=await res.json(); if(!res.ok||data.error) throw new Error(data.message||data.error||'알림 조회 실패'); const arr=normalizeFeed(data); const sundayKeys=['썬데이','SUN DAY','Sunday','SUNDAY']; let added=0; arr.forEach(n=>{const title=feedTitle(n); if(!title)return; const isSunday=sundayKeys.some(k=>title.includes(k)); if(mode==='sunday'&&!isSunday)return; const kind=isSunday?'sunday':(mode==='notice'?'notice':'event'); const url=feedUrl(n); if(!state.notices.some(x=>x.title===title&&x.kind===kind)){state.notices.unshift({title,url,date:feedDate(n),kind});added++;}}); save(); toast(added?`${added}개 추가됨`:'새 알림 없음');}catch(e){toast((mode==='notice'?'공지':mode==='event'?'이벤트':'썬데이')+' 불러오기 실패: Worker 설정 확인');}}
-document.getElementById('noticeBtn').onclick=()=>detectNotices('notice'); document.getElementById('eventBtn').onclick=()=>detectNotices('event'); document.getElementById('sundayBtn').onclick=()=>detectNotices('sunday'); document.getElementById('quickNotice').onclick=()=>detectNotices('notice'); document.getElementById('addManualNotice').onclick=()=>{const title=document.getElementById('manualNoticeTitle').value.trim(); if(!title)return toast('제목을 입력해줘'); state.notices.unshift({title,url:document.getElementById('manualNoticeUrl').value.trim(),date:new Date().toISOString().slice(0,10),kind:title.includes('썬데이')?'sunday':'memo'}); document.getElementById('manualNoticeTitle').value='';document.getElementById('manualNoticeUrl').value='';save();}; document.getElementById('clearNotices').onclick=()=>{if(confirm('알림을 모두 삭제할까?')){state.notices=[];save();}};
+
+function feedCacheKey(mode){return mode==='notice'?'mapleBossNoticeFeed':'mapleBossEventFeed';}
+function readFeedCache(mode){try{const key=feedCacheKey(mode); const last=Number(localStorage.getItem(key+'At')||0); if(!last||Date.now()-last>NOTICE_CACHE_MS)return null; return JSON.parse(localStorage.getItem(key)||'null');}catch(e){return null}}
+function writeFeedCache(mode,data){try{const key=feedCacheKey(mode); localStorage.setItem(key,JSON.stringify(data)); localStorage.setItem(key+'At',String(Date.now()));}catch(e){}}
+async function fetchFeed(mode,force=false){
+ const endpoint=mode==='notice'?'/api/notices':'/api/events';
+ const cacheMode=mode==='notice'?'notice':'event';
+ if(!force){const cached=readFeedCache(cacheMode); if(cached)return cached;}
+ const res=await fetch(`${WORKER_URL}${endpoint}`);
+ const data=await res.json();
+ if(!res.ok||data.error) throw new Error(data.message||data.error||'알림 조회 실패');
+ writeFeedCache(cacheMode,data);
+ return data;
+}
+function upsertFeedItems(arr,mode){
+ const sundayKeys=['썬데이','SUN DAY','Sunday','SUNDAY'];
+ let added=0;
+ arr.forEach(n=>{
+   const title=feedTitle(n);
+   if(!title)return;
+   const isSunday=sundayKeys.some(k=>title.includes(k));
+   if(mode==='sunday'&&!isSunday)return;
+   const kind=isSunday?'sunday':(mode==='notice'?'notice':'event');
+   const url=feedUrl(n);
+   const date=feedDate(n);
+   const old=state.notices.find(x=>x.title===title&&x.kind===kind);
+   if(old){old.url=old.url||url; old.date=old.date||date; return;}
+   state.notices.unshift({title,url,date,kind});
+   added++;
+ });
+ return added;
+}
+async function detectNotices(mode='notice',opts={}){
+ const force=!!opts.force, silent=!!opts.silent;
+ try{
+   const data=await fetchFeed(mode,force);
+   const arr=normalizeFeed(data);
+   const added=upsertFeedItems(arr,mode);
+   localStorage.setItem(LS,JSON.stringify(state));
+   renderNotices(); renderDash();
+   if(!silent) toast(added?`${added}개 추가됨`:'새 알림 없음');
+ }catch(e){
+   if(!silent) toast((mode==='notice'?'공지':mode==='event'?'이벤트':'썬데이')+' 불러오기 실패: Worker 설정 확인');
+ }
+}
+let autoFeedRunning=false;
+async function autoRefreshFeeds(){
+ if(autoFeedRunning)return;
+ autoFeedRunning=true;
+ try{
+   await detectNotices('notice',{silent:true});
+   await detectNotices('event',{silent:true});
+   await detectNotices('sunday',{silent:true});
+ }finally{autoFeedRunning=false;}
+}
+document.getElementById('noticeBtn').onclick=()=>detectNotices('notice',{force:true}); document.getElementById('eventBtn').onclick=()=>detectNotices('event',{force:true}); document.getElementById('sundayBtn').onclick=()=>detectNotices('sunday',{force:true}); document.getElementById('quickNotice').onclick=()=>detectNotices('notice',{force:true}); document.getElementById('addManualNotice').onclick=()=>{const title=document.getElementById('manualNoticeTitle').value.trim(); if(!title)return toast('제목을 입력해줘'); state.notices.unshift({title,url:document.getElementById('manualNoticeUrl').value.trim(),date:new Date().toISOString().slice(0,10),kind:title.includes('썬데이')?'sunday':'memo'}); document.getElementById('manualNoticeTitle').value='';document.getElementById('manualNoticeUrl').value='';save();}; document.getElementById('clearNotices').onclick=()=>{if(confirm('알림을 모두 삭제할까?')){state.notices=[];save();}};
 function exportJson(){const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='maple-boss-sketch-backup.json';a.click();URL.revokeObjectURL(a.href)} document.getElementById('exportData').onclick=exportJson; document.getElementById('importData').onchange=e=>{const file=e.target.files[0]; if(!file)return; const r=new FileReader(); r.onload=()=>{try{state=JSON.parse(r.result);save();toast('가져오기 완료')}catch(err){toast('JSON 파일을 확인해줘')}}; r.readAsText(file)};
 
 
@@ -385,6 +440,7 @@ function initPwaInstall(){
 initPwaInstall();
 
 if(!state.characters.length){state.characters=[{id:'c1',name:'썬슈슈',world:'',job:'',level:'',bosses:DEFAULT_BOSSES.map(b=>({id:b.id,enabled:false,done:false,price:b.price,party:1}))}]; selected='c1'; save();} else render();
+setTimeout(autoRefreshFeeds,600);
 </script>
 </body>
 </html>
