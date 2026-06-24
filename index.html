@@ -3,7 +3,13 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Maple Boss Sketch Log v18</title>
+  <title>Maple Boss Sketch Log v19</title>
+  <meta name="theme-color" content="#f4d36d" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Maple Boss" />
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="./icons/icon-192.png" />
   <style>
     :root{
       --paper:#fbf1d8; --paper2:#fffaf0; --ink:#29231e; --muted:#716658; --line:#2d271f;
@@ -49,7 +55,7 @@
 
   <section id="notices" class="view"><div class="dashGrid"><div class="card"><div class="split"><h2>메이플 알림 감지</h2><div class="row"><button class="btn blue" id="noticeBtn">공지 감지</button><button class="btn orange" id="sundayBtn">썬데이만 감지</button></div></div><p class="muted small">공지 전체는 이벤트/점검/업데이트/캐시샵 키워드를 저장하고, 썬데이 탭은 제목에 ‘썬데이’가 들어간 공지만 따로 모아요.</p><div class="noticeTabs"><button class="noticeTab active" data-notice-tab="all">공지 감지</button><button class="noticeTab" data-notice-tab="sunday">썬데이 메이플</button></div><div id="noticeList" class="noticePanel active"></div><div id="sundayList" class="noticePanel"></div></div><div class="card"><h2>수동 메모</h2><div class="stack"><input id="manualNoticeTitle" placeholder="예: 썬데이 메이플 - 스타포스 30% 할인"><input id="manualNoticeUrl" placeholder="링크"><button class="btn primary" id="addManualNotice">메모 저장</button><button class="btn ghost" id="clearNotices">알림 전체 삭제</button></div></div></div></section>
 
-  <section id="settings" class="view"><div class="dashGrid"><div class="card"><h2>API / 데이터</h2><div class="stack"><div class="field"><label>NEXON Open API Key</label><input id="apiKey" type="password" placeholder="API Key 입력"></div><button class="btn primary" id="saveApi">API Key 저장</button><div class="row"><button class="btn" id="exportData">JSON 내보내기</button><label class="btn" for="importData">JSON 가져오기</label><input id="importData" type="file" accept="application/json" style="display:none"></div><p class="muted small">데이터는 이 기기 브라우저 localStorage에 저장돼요. 깃허브/클라우드플레어로 배포해도 기기별 저장이에요.</p></div></div><div class="card"><h2>Maplescouter 링크 규칙</h2><p class="muted small">캐릭터명만 바꿔서 아래 구조로 열어요.</p><pre style="white-space:pre-wrap;background:#fffdf5;border:2px dashed var(--line);border-radius:16px;padding:12px">/ko/result?name=캐릭터명&preset=00000
+  <section id="settings" class="view"><div class="dashGrid"><div class="card"><h2>API / 데이터</h2><div class="stack"><div class="field"><label>NEXON Open API Key</label><input id="apiKey" type="password" placeholder="API Key 입력"></div><button class="btn primary" id="saveApi">API Key 저장</button><div class="row"><button class="btn" id="exportData">JSON 내보내기</button><label class="btn" for="importData">JSON 가져오기</label><input id="importData" type="file" accept="application/json" style="display:none"></div><p class="muted small">데이터는 이 기기 브라우저 localStorage에 저장돼요. 깃허브/클라우드플레어로 배포해도 기기별 저장이에요.</p></div></div><div class="card"><h2>웹앱 설치</h2><div class="stack"><button class="btn primary" id="installPwa">앱으로 설치</button><p class="muted small" id="installHint">설치 버튼이 안 뜨면 브라우저 메뉴에서 ‘홈 화면에 추가’ 또는 ‘앱 설치’를 선택해줘. GitHub Pages처럼 HTTPS 주소에서 열어야 설치가 가능해요.</p></div></div><div class="card"><h2>Maplescouter 링크 규칙</h2><p class="muted small">캐릭터명만 바꿔서 아래 구조로 열어요.</p><pre style="white-space:pre-wrap;background:#fffdf5;border:2px dashed var(--line);border-radius:16px;padding:12px">/ko/result?name=캐릭터명&preset=00000
 /ko/info?name=캐릭터명&preset=00000
 /ko/spec-order?name=캐릭터명&preset=00000</pre></div></div></section>
 </div>
@@ -283,6 +289,30 @@ document.getElementById('saveApi').onclick=()=>{state.apiKey=document.getElement
 async function detectNotices(onlySunday=false){ if(!state.apiKey){toast('API Key를 먼저 저장해줘'); return;} try{const res=await fetch('https://open.api.nexon.com/maplestory/v1/notice',{headers:{'x-nxopen-api-key':state.apiKey}}); const data=await res.json(); const arr=data.notice||data.notices||[]; const keys=onlySunday?['썬데이']:['이벤트','점검','업데이트','캐시샵','썬데이']; let added=0; arr.forEach(n=>{const title=n.title||n.notice_title||''; if(keys.some(k=>title.includes(k))&&!state.notices.some(x=>x.title===title)){const isSunday=title.includes('썬데이'); state.notices.unshift({title,url:n.url||n.notice_url||'',date:n.date||n.notice_date||new Date().toISOString().slice(0,10),kind:isSunday?'sunday':'notice'});added++;}}); save(); toast(added?`${added}개 감지됨`:'새 알림 없음');}catch(e){toast('브라우저 호출 실패: Worker 프록시 필요 가능');}}
 document.getElementById('noticeBtn').onclick=()=>detectNotices(false); document.getElementById('sundayBtn').onclick=()=>detectNotices(true); document.getElementById('quickNotice').onclick=()=>detectNotices(false); document.getElementById('addManualNotice').onclick=()=>{const title=document.getElementById('manualNoticeTitle').value.trim(); if(!title)return toast('제목을 입력해줘'); state.notices.unshift({title,url:document.getElementById('manualNoticeUrl').value.trim(),date:new Date().toISOString().slice(0,10),kind:title.includes('썬데이')?'sunday':'memo'}); document.getElementById('manualNoticeTitle').value='';document.getElementById('manualNoticeUrl').value='';save();}; document.getElementById('clearNotices').onclick=()=>{if(confirm('알림을 모두 삭제할까?')){state.notices=[];save();}};
 function exportJson(){const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='maple-boss-sketch-backup.json';a.click();URL.revokeObjectURL(a.href)} document.getElementById('exportData').onclick=exportJson; document.getElementById('importData').onchange=e=>{const file=e.target.files[0]; if(!file)return; const r=new FileReader(); r.onload=()=>{try{state=JSON.parse(r.result);save();toast('가져오기 완료')}catch(err){toast('JSON 파일을 확인해줘')}}; r.readAsText(file)};
+
+
+let deferredInstallPrompt=null;
+function isStandaloneMode(){return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone===true;}
+window.addEventListener('beforeinstallprompt',(e)=>{e.preventDefault(); deferredInstallPrompt=e; const btn=document.getElementById('installPwa'); if(btn){btn.disabled=false; btn.textContent='앱으로 설치';} const hint=document.getElementById('installHint'); if(hint) hint.textContent='설치할 수 있어요. 아래 버튼을 눌러 앱으로 설치해줘.';});
+window.addEventListener('appinstalled',()=>{deferredInstallPrompt=null; toast('설치 완료'); const btn=document.getElementById('installPwa'); if(btn){btn.disabled=true; btn.textContent='설치 완료';}});
+async function installPwa(){
+ const btn=document.getElementById('installPwa');
+ if(isStandaloneMode()){toast('이미 앱으로 실행 중이야'); if(btn)btn.textContent='설치 완료'; return;}
+ if(!deferredInstallPrompt){toast('브라우저 메뉴에서 앱 설치/홈 화면에 추가를 눌러줘'); return;}
+ deferredInstallPrompt.prompt();
+ const result=await deferredInstallPrompt.userChoice.catch(()=>null);
+ deferredInstallPrompt=null;
+ if(result?.outcome==='accepted') toast('설치 진행 중'); else toast('설치를 취소했어');
+}
+function initPwaInstall(){
+ const btn=document.getElementById('installPwa');
+ if(btn){btn.onclick=installPwa; if(isStandaloneMode()){btn.disabled=true; btn.textContent='설치 완료';} else {btn.textContent='앱으로 설치';}}
+ if('serviceWorker' in navigator && (location.protocol==='https:' || location.hostname==='localhost')){
+   navigator.serviceWorker.register('./sw.js').catch(()=>{});
+ }
+}
+initPwaInstall();
+
 if(!state.characters.length){state.characters=[{id:'c1',name:'썬슈슈',world:'',job:'',level:'',bosses:DEFAULT_BOSSES.map(b=>({id:b.id,enabled:false,done:false,price:b.price,party:1}))}]; selected='c1'; save();} else render();
 </script>
 </body>
