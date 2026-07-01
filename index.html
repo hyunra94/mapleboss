@@ -87,7 +87,7 @@
 
   <section id="settings" class="view"><div class="dashGrid"><div class="card"><h2>API / 데이터</h2><div class="stack"><div class="presetBox"><b>Worker 연결</b><p class="muted small" style="margin:6px 0 0">캐릭터 자동 조회와 메이플 알림은 Cloudflare Worker를 통해 호출돼요. API Key는 앱/깃허브 코드에 저장하지 않아요.</p><p class="muted small" style="margin:6px 0 0;word-break:break-all">https://mapleboss.hyunra94.workers.dev</p></div><div class="row"><button class="btn" id="exportData">JSON 내보내기</button><label class="btn" for="importData">JSON 가져오기</label><input id="importData" type="file" accept="application/json" style="display:none"></div><p class="muted small">데이터는 이 기기 브라우저 localStorage에 저장돼요. GitHub에는 API Key가 들어가지 않아요.</p></div></div><div class="card"><h2>웹앱 설치</h2><div class="stack"><button class="btn primary" id="installPwa">앱으로 설치</button><p class="muted small" id="installHint">설치 버튼이 안 뜨면 브라우저 메뉴에서 ‘홈 화면에 추가’ 또는 ‘앱 설치’를 선택해줘. GitHub Pages처럼 HTTPS 주소에서 열어야 설치가 가능해요.</p></div></div><div class="card"><h2>Maplescouter 링크 규칙</h2><p class="muted small">캐릭터명만 바꿔서 아래 구조로 열어요.</p><pre style="white-space:pre-wrap;background:#fffdf5;border:2px dashed var(--line);border-radius:16px;padding:12px">/ko/result?name=캐릭터명&preset=00000
 /ko/info?name=캐릭터명&preset=00000
-/ko/spec-order?name=캐릭터명&preset=00000</pre></div></div></section>
+/ko/spec-order?name=캐릭터명&preset=00000</pre></div><div class="card"><h2>기기 동기화</h2><div class="stack"><div class="presetBox"><b>동기화 코드</b><p class="muted small" style="margin:6px 0 0">코드를 아는 기기끼리 데이터를 공유해요. 본인만 아는 코드를 사용해줘.</p></div><input id="syncCode" placeholder="동기화 코드 입력 (예: maple1234)"><div class="row"><button class="btn green" id="syncUpload" style="flex:1">업로드 ↑ (이 기기 → 클라우드)</button><button class="btn blue" id="syncDownload" style="flex:1">다운로드 ↓ (클라우드 → 이 기기)</button></div><p class="muted small" id="syncStatus"></p></div></div></div></section>
 </div>
 
 <div class="modal" id="modal"><div class="modalBox"><div class="modalHead"><h2 id="modalTitle">편집</h2><button class="modalX" id="closeModalX" title="닫기">×</button></div><div id="modalBody"></div><div class="actions"><button class="btn ghost" id="cancelModal">취소</button><button class="btn primary" id="saveModal">저장</button></div></div></div><div class="toast" id="toast"></div>
@@ -667,6 +667,48 @@ function initPwaInstall(){
  }
 }
 initPwaInstall();
+
+// 동기화
+const SYNC_CODE_KEY='mapleBossSyncCode';
+const syncCodeEl=document.getElementById('syncCode');
+syncCodeEl.value=localStorage.getItem(SYNC_CODE_KEY)||'';
+syncCodeEl.oninput=()=>localStorage.setItem(SYNC_CODE_KEY,syncCodeEl.value.trim());
+
+async function syncUpload(){
+  const code=syncCodeEl.value.trim();
+  if(!code)return toast('동기화 코드를 입력해줘');
+  const status=document.getElementById('syncStatus');
+  status.textContent='업로드 중...';
+  try{
+    const res=await fetch(`${WORKER_URL}/api/sync?code=${encodeURIComponent(code)}`,{
+      method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(state)
+    });
+    if(!res.ok)throw new Error(await res.text());
+    status.textContent='업로드 완료 ✓ '+new Date().toLocaleTimeString();
+    toast('클라우드에 저장했어');
+  }catch(e){status.textContent='업로드 실패: '+e.message;toast('업로드 실패');}
+}
+
+async function syncDownload(){
+  const code=syncCodeEl.value.trim();
+  if(!code)return toast('동기화 코드를 입력해줘');
+  const status=document.getElementById('syncStatus');
+  status.textContent='다운로드 중...';
+  try{
+    const res=await fetch(`${WORKER_URL}/api/sync?code=${encodeURIComponent(code)}`);
+    if(res.status===404){status.textContent='해당 코드로 저장된 데이터가 없어';return toast('저장된 데이터 없음');}
+    if(!res.ok)throw new Error(await res.text());
+    const data=await res.json();
+    if(confirm('현재 데이터를 클라우드 데이터로 덮어쓸까?\n되돌릴 수 없어.')){
+      state=migrateLoadedState(data);save();
+      status.textContent='다운로드 완료 ✓ '+new Date().toLocaleTimeString();
+      toast('데이터 불러오기 완료');
+    }
+  }catch(e){status.textContent='다운로드 실패: '+e.message;toast('다운로드 실패');}
+}
+
+document.getElementById('syncUpload').onclick=syncUpload;
+document.getElementById('syncDownload').onclick=syncDownload;
 
 render();
 setTimeout(autoRefreshFeeds,600);
