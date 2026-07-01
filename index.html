@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Maple Boss Sketch Log v36</title>
+  <title>Maple Boss Sketch Log v37</title>
   <meta name="theme-color" content="#f4d36d" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
@@ -40,6 +40,14 @@
 .checkField{border:2px dashed var(--line);border-radius:16px;background:#fffdf5;padding:10px 12px;display:flex;align-items:center;gap:8px;font-weight:1000}
 .checkField input{width:auto;box-shadow:none}
 
+.charSectionTitle{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:12px 0 8px;font-weight:1000}
+.charFold{border:2px dashed var(--line);border-radius:18px;background:rgba(255,255,255,.35);padding:10px;margin-top:12px}
+.charFold summary{cursor:pointer;font-weight:1000;list-style:none;display:flex;justify-content:space-between;gap:8px;align-items:center}
+.charFold summary::-webkit-details-marker{display:none}
+.charFold[open] summary{margin-bottom:10px}
+.bulkRow{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.bulkRow .btn{width:100%;padding:9px 8px;font-size:12px}
+
 .sundayBanner{display:none;border:2px solid var(--line);border-radius:20px;background:#fff6cf;box-shadow:var(--soft);padding:12px 14px;margin:0 0 14px;position:relative}
 .sundayBanner.show{display:block}
 .sundayBanner h3{margin:0 0 6px;font-size:18px}
@@ -68,7 +76,7 @@
 
   <section id="characters" class="view"><div class="card"><h2>캐릭터 목록</h2><div class="quickAdd"><input id="quickCharName" placeholder="캐릭터명 검색/입력"><button class="btn primary" id="quickAddChar">+ 추가</button></div><div class="row" style="margin-bottom:10px"><button class="btn blue" id="fetchAllChars" style="width:100%">캐릭터 API 일괄 조회</button></div><div id="charList" class="list"></div><div id="charDetail" style="display:none"></div></div></section>
 
-  <section id="bosses" class="view"><div class="grid"><aside class="card"><h2>집계 캐릭터</h2><div id="bossCharList" class="list"></div><button class="btn ghost" id="resetWeek" style="margin-top:10px;width:100%">주간 체크 초기화</button></aside><main class="card"><div id="bossList" class="list"></div></main></div></section>
+  <section id="bosses" class="view"><div class="grid"><aside class="card"><h2>집계 캐릭터</h2><div id="bossCharList" class="list"></div><button class="btn ghost" id="resetWeek" style="margin-top:10px;width:100%">주간 체크 초기화</button><div class="bulkRow"><button class="btn green" id="markSelectedDone">선택 캐릭터 전체 완료</button><button class="btn ghost" id="clearSelectedDone">선택 캐릭터 완료 해제</button></div></aside><main class="card"><div id="bossList" class="list"></div></main></div></section>
 
   <section id="notices" class="view"><div class="dashGrid"><div class="card"><div class="split"><h2>메이플 알림</h2><div class="row"><button class="btn blue" id="noticeBtn">공지</button><button class="btn green" id="eventBtn">이벤트</button><button class="btn orange" id="sundayBtn">썬데이만</button></div></div><p class="muted small">썬데이 메이플은 이벤트 목록에서 찾아요. 공지는 일반 공지/점검/업데이트 중심으로, 이벤트는 이벤트 목록 전체로 분리했어요.</p><div class="noticeTabs"><button class="noticeTab active" data-notice-tab="notice">공지</button><button class="noticeTab" data-notice-tab="event">이벤트</button><button class="noticeTab" data-notice-tab="sunday">썬데이 메이플</button></div><div id="noticeList" class="noticePanel active"></div><div id="eventList" class="noticePanel"></div><div id="sundayList" class="noticePanel"></div></div><div class="card"><h2>수동 메모</h2><div class="stack"><input id="manualNoticeTitle" placeholder="예: 썬데이 메이플 - 스타포스 30% 할인"><input id="manualNoticeUrl" placeholder="링크"><button class="btn primary" id="addManualNotice">메모 저장</button><button class="btn ghost" id="clearNotices">알림 전체 삭제</button></div></div></div></section>
 
@@ -167,15 +175,22 @@ function progressHtml(c){const p=bossProgress(c); if(!isBossIncluded(c))return '
 function charTileHtml(c){const t=charTotals(c); const l=links(c); return `<div class="charTile ${c.id===selected?'active':''}" data-charcard="${c.id}"><button class="bossMenuDots" data-charmenu="${c.id}" title="수정/삭제">⋯</button><div class="charName">${c.name}</div><div class="charMeta">${c.world||'-'} · ${c.job||'-'} · Lv.${c.level||'-'}</div>${progressHtml(c)}<div class="charMoneyLine"><span>주간 ${won(t.w)}</span><span>월간 ${won(t.m)}</span></div><div class="miniLinks"><a class="btn pink" target="_blank" href="${l.boss}">보스</a><a class="btn blue" target="_blank" href="${l.info}">장비</a><a class="btn green" target="_blank" href="${l.spec}">스펙</a></div></div>`;}
 function partyControlHtml(cb,b){const party=Number(cb.party||1)||1; const priceText=`${party}인 파티 · 1인당 ${won(effectivePrice(cb,b))}`; const otherVal=party>=3?String(party):''; return `<span class="savedHint">${priceText}</span><div class="partyChips"><button class="partyChip ${party===1?'active':''}" data-partyboss="${b.id}" data-party="1">1인</button><button class="partyChip ${party===2?'active':''}" data-partyboss="${b.id}" data-party="2">2인</button><select class="partyChip ${party>=3?'active':''}" data-partyother="${b.id}"><option value="" ${!otherVal?'selected':''}>기타 ▼</option><option value="3" ${otherVal==='3'?'selected':''}>3인</option><option value="4" ${otherVal==='4'?'selected':''}>4인</option><option value="5" ${otherVal==='5'?'selected':''}>5인</option><option value="6" ${otherVal==='6'?'selected':''}>6인</option></select></div>`;}
 function renderCharLists(){
- const html=state.characters.length?`<div class="charGrid">${state.characters.map(c=>charTileHtml(c)).join('')}</div>`:'<div class="empty">캐릭터를 추가해줘</div>';
+ const included=state.characters.filter(isBossIncluded);
+ const excluded=state.characters.filter(c=>!isBossIncluded(c));
+ const includedHtml=included.length?`<div class="charGrid">${included.map(c=>charTileHtml(c)).join('')}</div>`:'<div class="empty">보스 집계 포함 캐릭터가 없어</div>';
+ const excludedHtml=excluded.length?`<details class="charFold"><summary><span>집계 제외 캐릭터</span><span class="groupMeta">▼ ${excluded.length}명</span></summary><div class="charGrid">${excluded.map(c=>charTileHtml(c)).join('')}</div></details>`:'';
+ const html=state.characters.length?`<div class="charSectionTitle"><span>내 캐릭터</span><span class="muted small">카드 클릭 시 보스 집계로 이동</span></div>${includedHtml}${excludedHtml}`:'<div class="empty">캐릭터를 추가해줘</div>';
  document.getElementById('charList').innerHTML=html;
  const bossChars=state.characters.filter(isBossIncluded); const bossHtml=bossChars.length?bossChars.map(c=>{const t=charTotals(c);const btn=`<div class="charBtn ${c.id===selected?'active':''}" data-bosschar="${c.id}"><button class="bossMenuDots" data-charmenu="${c.id}" title="수정/삭제">⋯</button><div class="charName">${c.name}</div><div class="charMeta">${c.world||'-'} · ${c.job||'-'} · Lv.${c.level||'-'}</div>${progressHtml(c)}<div class="charMoneyLine"><span>주간 ${won(t.w)}</span><span>월간 ${won(t.m)}</span></div></div>`; return btn+selectedBossInline(c);}).join(''):'<div class="empty">보스 집계 포함 캐릭터가 없어</div>';
  document.getElementById('bossCharList').innerHTML=bossHtml;
  document.querySelectorAll('[data-charcard]').forEach(card=>{
    card.onclick=(ev)=>{
      if(ev.target.closest('a')||ev.target.closest('[data-charmenu]'))return;
+     const c=state.characters.find(x=>x.id===card.dataset.charcard);
      selected=card.dataset.charcard;
      render();
+     if(c&&isBossIncluded(c)) switchView('bosses');
+     else toast('보스 집계 제외 캐릭터야');
    };
  });
  document.querySelectorAll('[data-bosschar]').forEach(card=>{
@@ -250,7 +265,7 @@ function attachLongPress(el,cb){
  el.addEventListener('contextmenu',(e)=>{e.preventDefault(); cb(e);});
 }
 function renderBosses(){
- const c=activeChar(), el=document.getElementById('bossList');
+ const c=state.characters.find(x=>x.id===selected&&isBossIncluded(x))||state.characters.find(isBossIncluded), el=document.getElementById('bossList');
  if(!c||!isBossIncluded(c)){el.innerHTML='<div class="empty">보스 집계 포함 캐릭터를 선택해줘</div>';return}
  if(!bossPickerVisible){el.innerHTML='<div class="empty">집계 캐릭터의 ⋯ 버튼을 누르면 보스 결정석 선택이 열려요</div>';return}
  ensureCharBosses(c);
@@ -372,9 +387,13 @@ function renderBossSelectModalBody(keepScroll=false){
  const extraBody=`${compactExtra.length?`<div class="compactPickGrid">${compactExtra.map(groupHtml).join('')}</div>`:''}${normalExtra.map(groupHtml).join('')}`;
  const extraHtml=extraGroups.length?`<details class="bossGroup"><summary><span>미사용</span><span class="groupMeta">▼ ${extraGroups.length}개</span></summary><div class="bossGroupBody">${extraBody}</div></details>`:'';
  const selectedChips=selectedRows.length?selectedRows.map(x=>{const party=pickerDraft.partyById[x.b.id]||1; return `<span class="selectedChip ${x.b.type==='monthly'?'monthly':''}">${bossBaseName(x.b.name)} ${bossDifficulty(x.b.name)} · ${party}인 · ${won(effectivePrice({price:x.b.price,party},x.b))}</span>`}).join(''):'<span class="selectedChip">선택한 보스 없음</span>';
- body.innerHTML=`<div class="modalBossTop"><div class="inlinePickSummary" style="margin:0">선택한 보스 ${selectedRows.length}개 · 기준 합계 ${won(selectedSum)}</div><div class="selectedStrip">${selectedChips}</div><div class="row"><button class="btn blue" id="modalCommonBosses">주요 보스 프리셋</button><button class="btn orange" id="modalResetBossPreset">기본 가격표 다시 적용</button></div></div><div class="inlinePickList">${mainHtml}${extraHtml}</div>`;
+ body.innerHTML=`<div class="modalBossTop"><div class="inlinePickSummary" style="margin:0">선택한 보스 ${selectedRows.length}개 · 기준 합계 ${won(selectedSum)}</div><div class="selectedStrip">${selectedChips}</div><div class="row"><button class="btn blue" id="modalCommonBosses">주요 보스 프리셋</button><button class="btn green" id="modalSelectAllBosses">사용 목록 전체 선택</button><button class="btn ghost" id="modalClearBosses">선택 해제</button><button class="btn orange" id="modalResetBossPreset">기본 가격표 다시 적용</button></div></div><div class="inlinePickList">${mainHtml}${extraHtml}</div>`;
  const modalCommon=document.getElementById('modalCommonBosses');
  if(modalCommon) modalCommon.onclick=(ev)=>{ev.stopPropagation(); applyCommonBossesToDraft(); renderBossSelectModalBody(true); toast('주요 보스 프리셋 적용됨');};
+ const modalSelectAll=document.getElementById('modalSelectAllBosses');
+ if(modalSelectAll) modalSelectAll.onclick=(ev)=>{ev.stopPropagation(); const n=selectAllVisibleBossesToDraft(); renderBossSelectModalBody(true); toast(`사용 목록 ${n}개 일괄 선택`);};
+ const modalClear=document.getElementById('modalClearBosses');
+ if(modalClear) modalClear.onclick=(ev)=>{ev.stopPropagation(); const n=clearAllDraftBosses(); renderBossSelectModalBody(true); toast(n?`선택 ${n}개 해제`:'선택된 보스 없음');};
  const modalReset=document.getElementById('modalResetBossPreset');
  if(modalReset) modalReset.onclick=(ev)=>{ev.stopPropagation(); resetBossPreset(false); renderBossSelectModalBody(true);};
  body.querySelectorAll('[data-mdunused]').forEach(btn=>btn.onclick=(ev)=>{ev.stopPropagation(); const hidden=toggleUnusedBaseDraft(btn.dataset.mdunused); renderBossSelectModalBody(true); toast(hidden?'미사용으로 숨겼어':'사용 목록으로 옮겼어');});
@@ -478,6 +497,36 @@ function applyCommonBossesToDraft(){
  });
  return applied;
 }
+
+function selectAllVisibleBossesToDraft(){
+ if(!pickerDraft)return 0;
+ let count=0;
+ bossModalGroups().filter(g=>g.rank!==999&&!g.unused).forEach(g=>{
+   const item=[...g.items].sort((a,b)=>(Number(b.b.price)||0)-(Number(a.b.price)||0))[0];
+   if(item?.b){pickerDraft.selectedByBase[g.base]=item.b.id; if(!pickerDraft.partyById[item.b.id])pickerDraft.partyById[item.b.id]=1; count++;}
+ });
+ return count;
+}
+function clearAllDraftBosses(){
+ if(!pickerDraft)return 0;
+ const count=Object.values(pickerDraft.selectedByBase||{}).filter(Boolean).length;
+ pickerDraft.selectedByBase={};
+ return count;
+}
+function selectedIncludedChar(){
+ return state.characters.find(x=>x.id===selected&&isBossIncluded(x))||state.characters.find(isBossIncluded)||null;
+}
+function setSelectedCharacterDone(done){
+ const c=selectedIncludedChar();
+ if(!c)return toast('보스 집계 포함 캐릭터가 없어');
+ ensureCharBosses(c);
+ let count=0;
+ (c.bosses||[]).forEach(cb=>{if(cb.enabled){cb.done=!!done; count++;}});
+ selected=c.id;
+ save();
+ toast(done?`${c.name} ${count}개 완료 처리`:`${c.name} 완료 체크 해제`);
+}
+
 function enableCommonBosses(){
  const c=activeChar();
  if(!c)return toast('캐릭터를 먼저 추가해줘');
@@ -513,6 +562,8 @@ document.getElementById('quickAddChar').onclick=()=>addCharacterByName(document.
 
 document.querySelectorAll('[data-notice-tab]').forEach(btn=>btn.onclick=()=>{document.querySelectorAll('.noticeTab,.noticePanel').forEach(x=>x.classList.remove('active')); btn.classList.add('active'); const map={notice:'noticeList',event:'eventList',sunday:'sundayList'}; document.getElementById(map[btn.dataset.noticeTab]||'noticeList').classList.add('active'); if(btn.dataset.noticeTab==='sunday')markSundaySeen();});
 document.getElementById('resetWeek').onclick=()=>{state.characters.forEach(c=>(c.bosses||[]).forEach(cb=>{const b=state.bosses.find(x=>x.id===cb.id); if(b?.type==='weekly')cb.done=false;}));save();toast('주간 체크 초기화')};
+document.getElementById('markSelectedDone').onclick=()=>setSelectedCharacterDone(true);
+document.getElementById('clearSelectedDone').onclick=()=>setSelectedCharacterDone(false);
 function normalizeFeed(data){
  const direct=[data.events,data.event_notice,data.notice_event,data.event,data.event_list,data.notice,data.notices,data.notice_list,data.data,data.list,data.rows].find(Array.isArray);
  if(direct) return direct;
