@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Maple Boss Sketch Log v37</title>
+  <title>Maple Boss Sketch Log v38</title>
   <meta name="theme-color" content="#f4d36d" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
@@ -45,8 +45,12 @@
 .charFold summary{cursor:pointer;font-weight:1000;list-style:none;display:flex;justify-content:space-between;gap:8px;align-items:center}
 .charFold summary::-webkit-details-marker{display:none}
 .charFold[open] summary{margin-bottom:10px}
-.bulkRow{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
-.bulkRow .btn{width:100%;padding:9px 8px;font-size:12px}
+.bossStickyHead{position:sticky;top:10px;z-index:10;background:rgba(255,250,240,.96);border:2px solid var(--line);border-radius:18px;box-shadow:var(--soft);padding:10px 12px;margin:-4px -2px 10px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.bossStickyTitle{font-weight:1000;font-size:20px}
+.bossHeaderActions{display:flex;gap:6px;align-items:center}
+.bossHeaderActions .iconBtn{width:34px;height:34px;border-radius:999px;background:#fffdf5}
+.bossHeaderActions .iconBtn.primary{background:var(--green)}
+.bossHeaderActions .iconBtn.warn{background:var(--orange)}
 
 .sundayBanner{display:none;border:2px solid var(--line);border-radius:20px;background:#fff6cf;box-shadow:var(--soft);padding:12px 14px;margin:0 0 14px;position:relative}
 .sundayBanner.show{display:block}
@@ -76,7 +80,7 @@
 
   <section id="characters" class="view"><div class="card"><h2>캐릭터 목록</h2><div class="quickAdd"><input id="quickCharName" placeholder="캐릭터명 검색/입력"><button class="btn primary" id="quickAddChar">+ 추가</button></div><div class="row" style="margin-bottom:10px"><button class="btn blue" id="fetchAllChars" style="width:100%">캐릭터 API 일괄 조회</button></div><div id="charList" class="list"></div><div id="charDetail" style="display:none"></div></div></section>
 
-  <section id="bosses" class="view"><div class="grid"><aside class="card"><h2>집계 캐릭터</h2><div id="bossCharList" class="list"></div><button class="btn ghost" id="resetWeek" style="margin-top:10px;width:100%">주간 체크 초기화</button><div class="bulkRow"><button class="btn green" id="markSelectedDone">선택 캐릭터 전체 완료</button><button class="btn ghost" id="clearSelectedDone">선택 캐릭터 완료 해제</button></div></aside><main class="card"><div id="bossList" class="list"></div></main></div></section>
+  <section id="bosses" class="view"><div class="grid"><aside class="card"><div class="bossStickyHead"><div class="bossStickyTitle">집계 캐릭터</div><div class="bossHeaderActions"><button class="iconBtn primary" id="markSelectedDone" title="선택 캐릭터 완료">✓</button><button class="iconBtn warn" id="resetWeek" title="전체 주간 초기화">↺</button></div></div><div id="bossCharList" class="list"></div></aside><main class="card"><div id="bossList" class="list"></div></main></div></section>
 
   <section id="notices" class="view"><div class="dashGrid"><div class="card"><div class="split"><h2>메이플 알림</h2><div class="row"><button class="btn blue" id="noticeBtn">공지</button><button class="btn green" id="eventBtn">이벤트</button><button class="btn orange" id="sundayBtn">썬데이만</button></div></div><p class="muted small">썬데이 메이플은 이벤트 목록에서 찾아요. 공지는 일반 공지/점검/업데이트 중심으로, 이벤트는 이벤트 목록 전체로 분리했어요.</p><div class="noticeTabs"><button class="noticeTab active" data-notice-tab="notice">공지</button><button class="noticeTab" data-notice-tab="event">이벤트</button><button class="noticeTab" data-notice-tab="sunday">썬데이 메이플</button></div><div id="noticeList" class="noticePanel active"></div><div id="eventList" class="noticePanel"></div><div id="sundayList" class="noticePanel"></div></div><div class="card"><h2>수동 메모</h2><div class="stack"><input id="manualNoticeTitle" placeholder="예: 썬데이 메이플 - 스타포스 30% 할인"><input id="manualNoticeUrl" placeholder="링크"><button class="btn primary" id="addManualNotice">메모 저장</button><button class="btn ghost" id="clearNotices">알림 전체 삭제</button></div></div></div></section>
 
@@ -181,7 +185,7 @@ function renderCharLists(){
  const excludedHtml=excluded.length?`<details class="charFold"><summary><span>집계 제외 캐릭터</span><span class="groupMeta">▼ ${excluded.length}명</span></summary><div class="charGrid">${excluded.map(c=>charTileHtml(c)).join('')}</div></details>`:'';
  const html=state.characters.length?`<div class="charSectionTitle"><span>내 캐릭터</span><span class="muted small">카드 클릭 시 보스 집계로 이동</span></div>${includedHtml}${excludedHtml}`:'<div class="empty">캐릭터를 추가해줘</div>';
  document.getElementById('charList').innerHTML=html;
- const bossChars=state.characters.filter(isBossIncluded); const bossHtml=bossChars.length?bossChars.map(c=>{const t=charTotals(c);const btn=`<div class="charBtn ${c.id===selected?'active':''}" data-bosschar="${c.id}"><button class="bossMenuDots" data-charmenu="${c.id}" title="수정/삭제">⋯</button><div class="charName">${c.name}</div><div class="charMeta">${c.world||'-'} · ${c.job||'-'} · Lv.${c.level||'-'}</div>${progressHtml(c)}<div class="charMoneyLine"><span>주간 ${won(t.w)}</span><span>월간 ${won(t.m)}</span></div></div>`; return btn+selectedBossInline(c);}).join(''):'<div class="empty">보스 집계 포함 캐릭터가 없어</div>';
+ const bossChars=state.characters.filter(isBossIncluded); const bossHtml=bossChars.length?bossChars.map(c=>{const t=charTotals(c);const btn=`<div class="charBtn ${c.id===selected?'active':''}" data-bosschar="${c.id}"><button class="bossMenuDots" data-charmenu="${c.id}" title="수정/삭제">⋯</button><div class="charName" data-bossopen="${c.id}">${c.name}</div><div class="charMeta">${c.world||'-'} · ${c.job||'-'} · Lv.${c.level||'-'}</div>${progressHtml(c)}<div class="charMoneyLine"><span>주간 ${won(t.w)}</span><span>월간 ${won(t.m)}</span></div></div>`; return btn+selectedBossInline(c);}).join(''):'<div class="empty">보스 집계 포함 캐릭터가 없어</div>';
  document.getElementById('bossCharList').innerHTML=bossHtml;
  document.querySelectorAll('[data-charcard]').forEach(card=>{
    card.onclick=(ev)=>{
@@ -195,10 +199,17 @@ function renderCharLists(){
  });
  document.querySelectorAll('[data-bosschar]').forEach(card=>{
    card.onclick=(ev)=>{
-     if(ev.target.closest('[data-charmenu]'))return;
+     if(ev.target.closest('[data-charmenu]')||ev.target.closest('[data-bossopen]')||ev.target.closest('[data-inlinecheck]'))return;
      selected=card.dataset.bosschar;
      render();
-     openBossSelectModal(card.dataset.bosschar);
+   };
+ });
+ document.querySelectorAll('[data-bossopen]').forEach(name=>{
+   name.onclick=(ev)=>{
+     ev.stopPropagation();
+     selected=name.dataset.bossopen;
+     render();
+     openBossSelectModal(name.dataset.bossopen);
    };
  });
  document.querySelectorAll('[data-charmenu]').forEach(btn=>btn.onclick=(e)=>{
@@ -563,7 +574,6 @@ document.getElementById('quickAddChar').onclick=()=>addCharacterByName(document.
 document.querySelectorAll('[data-notice-tab]').forEach(btn=>btn.onclick=()=>{document.querySelectorAll('.noticeTab,.noticePanel').forEach(x=>x.classList.remove('active')); btn.classList.add('active'); const map={notice:'noticeList',event:'eventList',sunday:'sundayList'}; document.getElementById(map[btn.dataset.noticeTab]||'noticeList').classList.add('active'); if(btn.dataset.noticeTab==='sunday')markSundaySeen();});
 document.getElementById('resetWeek').onclick=()=>{state.characters.forEach(c=>(c.bosses||[]).forEach(cb=>{const b=state.bosses.find(x=>x.id===cb.id); if(b?.type==='weekly')cb.done=false;}));save();toast('주간 체크 초기화')};
 document.getElementById('markSelectedDone').onclick=()=>setSelectedCharacterDone(true);
-document.getElementById('clearSelectedDone').onclick=()=>setSelectedCharacterDone(false);
 function normalizeFeed(data){
  const direct=[data.events,data.event_notice,data.notice_event,data.event,data.event_list,data.notice,data.notices,data.notice_list,data.data,data.list,data.rows].find(Array.isArray);
  if(direct) return direct;
