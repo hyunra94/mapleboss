@@ -162,7 +162,20 @@ function migrateLoadedState(s){
  return {characters:chars,bosses:newBosses,notices:s.notices||[]};
 }
 function load(){try{const s=JSON.parse(localStorage.getItem(LS)||'{}');return migrateLoadedState(s)}catch(e){return {characters:[],bosses:DEFAULT_BOSSES,notices:[]}}}
-function save(){localStorage.setItem(LS,JSON.stringify(state));render();}
+let autoSyncTimer=null;
+function save(){localStorage.setItem(LS,JSON.stringify(state));render();autoSyncDebounced();}
+function autoSyncDebounced(){
+  const code=(localStorage.getItem(SYNC_CODE_KEY)||'').trim();
+  if(!code)return;
+  clearTimeout(autoSyncTimer);
+  autoSyncTimer=setTimeout(async()=>{
+    try{
+      await fetch(`${WORKER_URL}/api/sync?code=${encodeURIComponent(code)}`,{
+        method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(state)
+      });
+    }catch(e){}
+  },3000);
+}
 function won(n){n=Number(n)||0; if(n>=100000000)return (n/100000000).toFixed(n%100000000?1:0)+'억'; if(n>=10000)return Math.round(n/10000).toLocaleString()+'만'; return n.toLocaleString();}
 function toast(t){const el=document.getElementById('toast');el.textContent=t;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),1600)}
 function enc(n){return encodeURIComponent(n||'')}
