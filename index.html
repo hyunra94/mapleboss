@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Maple Boss Sketch Log v39</title>
+  <title>Maple Boss Sketch Log v38</title>
   <meta name="theme-color" content="#f4d36d" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
@@ -45,11 +45,7 @@
 .charFold summary{cursor:pointer;font-weight:1000;list-style:none;display:flex;justify-content:space-between;gap:8px;align-items:center}
 .charFold summary::-webkit-details-marker{display:none}
 .charFold[open] summary{margin-bottom:10px}
-.bossStickyHead{position:sticky;top:0;z-index:999;background:rgba(255,250,240,.98);border:2px solid var(--line);border-radius:18px;box-shadow:var(--soft);padding:10px 12px;margin:0 0 10px;display:flex;align-items:center;justify-content:space-between;gap:10px}
-#bosses aside.card{overflow:visible;padding:0;background:transparent;border:0;box-shadow:none}
-#bosses .bossCharPanel{background:rgba(255,250,240,.9);border:2px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:14px;overflow:visible;position:relative}
-#bosses .bossCharPanel:before{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(120deg,rgba(255,255,255,.55),transparent 38%);border-radius:var(--r)}
-#bosses .bossStickyHead,#bosses #bossCharList{position:relative}
+.bossStickyHead{position:sticky;top:10px;z-index:10;background:rgba(255,250,240,.96);border:2px solid var(--line);border-radius:18px;box-shadow:var(--soft);padding:10px 12px;margin:-4px -2px 10px;display:flex;align-items:center;justify-content:space-between;gap:10px}
 .bossStickyTitle{font-weight:1000;font-size:20px}
 .bossHeaderActions{display:flex;gap:6px;align-items:center}
 .bossHeaderActions .iconBtn{width:34px;height:34px;border-radius:999px;background:#fffdf5}
@@ -62,8 +58,9 @@
 .sundayBanner p{margin:4px 0;color:var(--muted);font-weight:900}
 .noticeDot{display:none;min-width:18px;height:18px;border:2px solid var(--line);border-radius:999px;background:var(--pink);font-size:10px;font-weight:1000;align-items:center;justify-content:center;margin-left:4px;padding:0 4px;vertical-align:middle}
 .noticeDot.show{display:inline-flex}
-    @media(max-width:900px){.hero{grid-template-columns:auto 1fr auto}.grid,.dashGrid{grid-template-columns:1fr}.miniStats,.summaryCards{grid-template-columns:repeat(2,1fr)}.bossToolbar{grid-template-columns:1fr}.bossItem{grid-template-columns:32px 1fr}.bossItem input,.bossItem select,.bossItem .iconBtn{grid-column:2}.linkGrid{grid-template-columns:1fr}.formGrid{grid-template-columns:1fr}.charGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.miniLinks{grid-template-columns:repeat(3,1fr)}}
+    @media(max-width:900px){.hero{grid-template-columns:auto 1fr auto}.grid,.dashGrid{grid-template-columns:1fr}.miniStats,.summaryCards{grid-template-columns:repeat(2,1fr)}.bossToolbar{grid-template-columns:1fr}.bossItem{grid-template-columns:32px 1fr}.bossItem input,.bossItem select,.bossItem .iconBtn{grid-column:2}.linkGrid{grid-template-columns:1fr}.formGrid{grid-template-columns:1fr}.charGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.miniLinks{grid-template-columns:repeat(3,1fr)}#bosses aside.card{position:relative;overflow:visible;max-height:none;}.bossStickyHead{position:sticky;top:0;z-index:20;}}
   .smallDone{margin-top:6px;padding:5px 8px;font-size:11px}.bossItem.selectedBoss{background:rgba(244,211,109,.18)}
+  @media(min-width:901px){#bosses aside.card{position:sticky;top:10px;align-self:start;max-height:calc(100vh - 120px);overflow-y:auto;overflow-x:hidden;}}
   </style>
 </head>
 <body>
@@ -84,7 +81,7 @@
 
   <section id="characters" class="view"><div class="card"><h2>캐릭터 목록</h2><div class="quickAdd"><input id="quickCharName" placeholder="캐릭터명 검색/입력"><button class="btn primary" id="quickAddChar">+ 추가</button></div><div class="row" style="margin-bottom:10px"><button class="btn blue" id="fetchAllChars" style="width:100%">캐릭터 API 일괄 조회</button></div><div id="charList" class="list"></div><div id="charDetail" style="display:none"></div></div></section>
 
-  <section id="bosses" class="view"><div class="grid"><aside class="card"><div class="bossCharPanel"><div class="bossStickyHead"><div class="bossStickyTitle">집계 캐릭터</div><div class="bossHeaderActions"><button class="iconBtn primary" id="markSelectedDone" title="선택 캐릭터 완료">✓</button><button class="iconBtn warn" id="resetWeek" title="전체 주간 초기화">↺</button></div></div><div id="bossCharList" class="list"></div></div></aside><main class="card"><div id="bossList" class="list"></div></main></div></section>
+  <section id="bosses" class="view"><div class="grid"><aside class="card"><div class="bossStickyHead"><div class="bossStickyTitle">집계 캐릭터</div><div class="bossHeaderActions"><button class="iconBtn primary" id="markSelectedDone" title="선택 캐릭터 완료">✓</button><button class="iconBtn warn" id="resetWeek" title="전체 주간 초기화">↺</button></div></div><div id="bossCharList" class="list"></div></aside><main class="card"><div id="bossList" class="list"></div></main></div></section>
 
   <section id="notices" class="view"><div class="dashGrid"><div class="card"><div class="split"><h2>메이플 알림</h2><div class="row"><button class="btn blue" id="noticeBtn">공지</button><button class="btn green" id="eventBtn">이벤트</button><button class="btn orange" id="sundayBtn">썬데이만</button></div></div><p class="muted small">썬데이 메이플은 이벤트 목록에서 찾아요. 공지는 일반 공지/점검/업데이트 중심으로, 이벤트는 이벤트 목록 전체로 분리했어요.</p><div class="noticeTabs"><button class="noticeTab active" data-notice-tab="notice">공지</button><button class="noticeTab" data-notice-tab="event">이벤트</button><button class="noticeTab" data-notice-tab="sunday">썬데이 메이플</button></div><div id="noticeList" class="noticePanel active"></div><div id="eventList" class="noticePanel"></div><div id="sundayList" class="noticePanel"></div></div><div class="card"><h2>수동 메모</h2><div class="stack"><input id="manualNoticeTitle" placeholder="예: 썬데이 메이플 - 스타포스 30% 할인"><input id="manualNoticeUrl" placeholder="링크"><button class="btn primary" id="addManualNotice">메모 저장</button><button class="btn ghost" id="clearNotices">알림 전체 삭제</button></div></div></div></section>
 
