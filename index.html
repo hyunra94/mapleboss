@@ -582,7 +582,7 @@ document.getElementById('quickAddChar').onclick=()=>addCharacterByName(document.
 
 document.querySelectorAll('[data-notice-tab]').forEach(btn=>btn.onclick=()=>{document.querySelectorAll('.noticeTab,.noticePanel').forEach(x=>x.classList.remove('active')); btn.classList.add('active'); const map={notice:'noticeList',event:'eventList',sunday:'sundayList'}; document.getElementById(map[btn.dataset.noticeTab]||'noticeList').classList.add('active'); if(btn.dataset.noticeTab==='sunday')markSundaySeen();});
 document.getElementById('resetWeek').onclick=()=>{state.characters.forEach(c=>(c.bosses||[]).forEach(cb=>{const b=state.bosses.find(x=>x.id===cb.id); if(b?.type==='weekly')cb.done=false;}));save();toast('주간 체크 초기화')};
-document.getElementById('markSelectedDone').onclick=()=>setSelectedCharacterDone(true);
+document.getElementById('markSelectedDone').onclick=()=>{const c=selectedIncludedChar(); if(!c)return; ensureCharBosses(c); const enabled=(c.bosses||[]).filter(cb=>cb.enabled); const allDone=enabled.length>0&&enabled.every(cb=>cb.done); setSelectedCharacterDone(!allDone);};
 document.querySelector('.bossStickyHead').onclick=(e)=>{if(e.target.closest('button'))return; window.scrollTo({top:0,behavior:'smooth'});};
 function normalizeFeed(data){
  const direct=[data.events,data.event_notice,data.notice_event,data.event,data.event_list,data.notice,data.notices,data.notice_list,data.data,data.list,data.rows].find(Array.isArray);
