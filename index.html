@@ -229,7 +229,11 @@ function renderCharLists(){
    e.stopPropagation();
    selected=btn.dataset.charmenu;
    render();
-   openBossSelectModal(btn.dataset.charmenu);
+   if(btn.closest('[data-bosschar]')){
+     openBossSelectModal(btn.dataset.charmenu);
+   } else {
+     openCharacterMenu(btn.dataset.charmenu);
+   }
  });
  document.querySelectorAll('[data-inlinecheck]').forEach(btn=>btn.onclick=(e)=>{e.stopPropagation(); const [cid,bid]=btn.dataset.inlinecheck.split('|'); const c=state.characters.find(x=>x.id===cid); if(!c)return; const cb=(c.bosses||[]).find(x=>x.id===bid); if(!cb)return; cb.done=!cb.done; cb.enabled=true; save();});
 }
