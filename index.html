@@ -46,7 +46,7 @@
 .charFold summary::-webkit-details-marker{display:none}
 .charFold[open] summary{margin-bottom:10px}
 .bossStickyHead{position:sticky;top:10px;z-index:10;background:rgba(255,250,240,.96);border:2px solid var(--line);border-radius:18px;box-shadow:var(--soft);padding:10px 12px;margin:-4px -2px 10px;display:flex;align-items:center;justify-content:space-between;gap:10px}
-.bossStickyTitle{font-weight:1000;font-size:20px;cursor:pointer}
+.bossStickyTitle{font-weight:1000;font-size:20px}
 .bossHeaderActions{display:flex;gap:6px;align-items:center}
 .bossHeaderActions .iconBtn{width:34px;height:34px;border-radius:999px;background:#fffdf5}
 .bossHeaderActions .iconBtn.primary{background:var(--green)}
@@ -58,9 +58,8 @@
 .sundayBanner p{margin:4px 0;color:var(--muted);font-weight:900}
 .noticeDot{display:none;min-width:18px;height:18px;border:2px solid var(--line);border-radius:999px;background:var(--pink);font-size:10px;font-weight:1000;align-items:center;justify-content:center;margin-left:4px;padding:0 4px;vertical-align:middle}
 .noticeDot.show{display:inline-flex}
-    @media(max-width:900px){.hero{grid-template-columns:auto 1fr auto}.grid,.dashGrid{grid-template-columns:1fr}.miniStats,.summaryCards{grid-template-columns:repeat(2,1fr)}.bossToolbar{grid-template-columns:1fr}.bossItem{grid-template-columns:32px 1fr}.bossItem input,.bossItem select,.bossItem .iconBtn{grid-column:2}.linkGrid{grid-template-columns:1fr}.formGrid{grid-template-columns:1fr}.charGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.miniLinks{grid-template-columns:repeat(3,1fr)}#bosses aside.card{position:relative;overflow:clip;max-height:none;}.bossStickyHead{position:sticky;top:0;z-index:20;margin:0 0 10px;}}
+    @media(max-width:900px){.hero{grid-template-columns:auto 1fr auto}.grid,.dashGrid{grid-template-columns:1fr}.miniStats,.summaryCards{grid-template-columns:repeat(2,1fr)}.bossToolbar{grid-template-columns:1fr}.bossItem{grid-template-columns:32px 1fr}.bossItem input,.bossItem select,.bossItem .iconBtn{grid-column:2}.linkGrid{grid-template-columns:1fr}.formGrid{grid-template-columns:1fr}.charGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.miniLinks{grid-template-columns:repeat(3,1fr)}}
   .smallDone{margin-top:6px;padding:5px 8px;font-size:11px}.bossItem.selectedBoss{background:rgba(244,211,109,.18)}
-  @media(min-width:901px){#bosses aside.card{position:sticky;top:10px;align-self:start;max-height:calc(100vh - 120px);overflow-y:auto;overflow-x:hidden;}}
   </style>
 </head>
 <body>
@@ -87,10 +86,10 @@
 
   <section id="settings" class="view"><div class="dashGrid"><div class="card"><h2>API / 데이터</h2><div class="stack"><div class="presetBox"><b>Worker 연결</b><p class="muted small" style="margin:6px 0 0">캐릭터 자동 조회와 메이플 알림은 Cloudflare Worker를 통해 호출돼요. API Key는 앱/깃허브 코드에 저장하지 않아요.</p><p class="muted small" style="margin:6px 0 0;word-break:break-all">https://mapleboss.hyunra94.workers.dev</p></div><div class="row"><button class="btn" id="exportData">JSON 내보내기</button><label class="btn" for="importData">JSON 가져오기</label><input id="importData" type="file" accept="application/json" style="display:none"></div><p class="muted small">데이터는 이 기기 브라우저 localStorage에 저장돼요. GitHub에는 API Key가 들어가지 않아요.</p></div></div><div class="card"><h2>웹앱 설치</h2><div class="stack"><button class="btn primary" id="installPwa">앱으로 설치</button><p class="muted small" id="installHint">설치 버튼이 안 뜨면 브라우저 메뉴에서 ‘홈 화면에 추가’ 또는 ‘앱 설치’를 선택해줘. GitHub Pages처럼 HTTPS 주소에서 열어야 설치가 가능해요.</p></div></div><div class="card"><h2>Maplescouter 링크 규칙</h2><p class="muted small">캐릭터명만 바꿔서 아래 구조로 열어요.</p><pre style="white-space:pre-wrap;background:#fffdf5;border:2px dashed var(--line);border-radius:16px;padding:12px">/ko/result?name=캐릭터명&preset=00000
 /ko/info?name=캐릭터명&preset=00000
-/ko/spec-order?name=캐릭터명&preset=00000</pre></div><div class="card"><h2>기기 동기화</h2><div class="stack"><div class="presetBox"><b>동기화 코드</b><p class="muted small" style="margin:6px 0 0">코드를 아는 기기끼리 데이터를 공유해요. 본인만 아는 코드를 사용해줘.</p></div><input id="syncCode" placeholder="동기화 코드 입력 (예: maple1234)"><div class="row"><button class="btn green" id="syncUpload" style="flex:1">업로드 ↑ (이 기기 → 클라우드)</button><button class="btn blue" id="syncDownload" style="flex:1">다운로드 ↓ (클라우드 → 이 기기)</button></div><p class="muted small" id="syncStatus"></p></div></div></div></section>
+/ko/spec-order?name=캐릭터명&preset=00000</pre></div></div></section>
 </div>
 
-<div class="modal" id="modal"><div class="modalBox"><div class="modalHead"><h2 id="modalTitle">편집</h2><div style="display:flex;gap:6px"><button class="modalX" id="modalDelete" title="삭제" style="display:none">🗑</button><button class="modalX" id="closeModalX" title="닫기">×</button></div></div><div id="modalBody"></div><div class="actions"><button class="btn ghost" id="cancelModal">취소</button><button class="btn primary" id="saveModal">저장</button></div></div></div><div class="toast" id="toast"></div>
+<div class="modal" id="modal"><div class="modalBox"><div class="modalHead"><h2 id="modalTitle">편집</h2><button class="modalX" id="closeModalX" title="닫기">×</button></div><div id="modalBody"></div><div class="actions"><button class="btn ghost" id="cancelModal">취소</button><button class="btn primary" id="saveModal">저장</button></div></div></div><div class="toast" id="toast"></div>
 <script>
 const LS='mapleBossSketchV5';
 const WORKER_URL='https://mapleboss.hyunra94.workers.dev';
@@ -145,9 +144,11 @@ const BOSS_PRESET_RAW=[
  ['피에르 (카오스)',8150000,'weekly'],
  ['반반 (카오스)',8140000,'weekly'],
  ['발드릭스 (노멀)',1368000000,'weekly'],
- ['발드릭스 (하드)',3078000000,'weekly']
+ ['발드릭스 (하드)',3078000000,'weekly'],
+ ['메이린 (노멀)',300000000,'weekly','challengers'],
+ ['메이린 (하드)',600000000,'weekly','challengers']
 ];
-const DEFAULT_BOSSES=BOSS_PRESET_RAW.map((b,i)=>({id:'b'+i,name:b[0],price:b[1],type:b[2]}));
+const DEFAULT_BOSSES=BOSS_PRESET_RAW.map((b,i)=>({id:'b'+i,name:b[0],price:b[1],type:b[2],...(b[3]==='challengers'?{challengers:true}:{})}));
 let state=load(); let selected=state.characters[0]?.id||null; let modalMode=null; let modalPayload=null; let pickerDraft=null; let pickerCharId=null; let bossPickerVisible=false;
 function bossKeyFromName(name){return (name||'').replace(/노말/g,'노멀').replace(/블러디퀸/g,'블러디 퀸').replace(/근원의 폭주/g,'찬란한 흉성').replace(/유니트르/g,'유피테르').replace(/키링/g,'카링').trim()}
 function migrateLoadedState(s){
@@ -162,33 +163,22 @@ function migrateLoadedState(s){
  return {characters:chars,bosses:newBosses,notices:s.notices||[]};
 }
 function load(){try{const s=JSON.parse(localStorage.getItem(LS)||'{}');return migrateLoadedState(s)}catch(e){return {characters:[],bosses:DEFAULT_BOSSES,notices:[]}}}
-let autoSyncTimer=null;
-function save(){localStorage.setItem(LS,JSON.stringify(state));render();autoSyncDebounced();}
-function autoSyncDebounced(){
-  const code=(localStorage.getItem(SYNC_CODE_KEY)||'').trim();
-  if(!code)return;
-  clearTimeout(autoSyncTimer);
-  autoSyncTimer=setTimeout(async()=>{
-    try{
-      await fetch(`${WORKER_URL}/api/sync?code=${encodeURIComponent(code)}`,{
-        method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(state)
-      });
-    }catch(e){}
-  },3000);
-}
+function save(){localStorage.setItem(LS,JSON.stringify(state));render();}
 function won(n){n=Number(n)||0; if(n>=100000000)return (n/100000000).toFixed(n%100000000?1:0)+'억'; if(n>=10000)return Math.round(n/10000).toLocaleString()+'만'; return n.toLocaleString();}
 function toast(t){const el=document.getElementById('toast');el.textContent=t;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),1600)}
 function enc(n){return encodeURIComponent(n||'')}
 function links(c){const n=enc(c.name);return {boss:`https://maplescouter.com/ko/result?name=${n}&preset=00000`,info:`https://maplescouter.com/ko/info?name=${n}&preset=00000`,spec:`https://maplescouter.com/ko/spec-order?name=${n}&preset=00000`}}
 function effectivePrice(cb,b){const price=Number(cb.price??b.price)||0; const party=Math.max(1,Number(cb.party||1)||1); return Math.floor(price/party);} 
-function charTotals(c){let w=0,m=0,d=0,cnt=0; for(const cb of c.bosses||[]){const b=state.bosses.find(x=>x.id===cb.id); if(!b)continue; const p=effectivePrice(cb,b); if(cb.enabled){ if(b.type==='monthly')m+=p; else w+=p; } if(cb.done){d+=p;cnt++;}} return {w,m,d,cnt,remain:w-d};}
+function charTotals(c){let w=0,m=0,d=0,cnt=0; for(const cb of c.bosses||[]){const b=state.bosses.find(x=>x.id===cb.id); if(!b)continue; if(isChallengersBoss(b)&&!isChallengersChar(c))continue; const p=effectivePrice(cb,b); if(cb.enabled){ if(b.type==='monthly')m+=p; else w+=p; } if(cb.done){d+=p;cnt++;}} return {w,m,d,cnt,remain:w-d};}
 function activeChar(){return state.characters.find(c=>c.id===selected)||state.characters[0]}
 function isBossIncluded(c){return c?.includeBoss!==false}
+function isChallengersBoss(b){return !!b?.challengers}
+function isChallengersChar(c){return (c?.world||'').includes('챌린저')}
 function ensureCharBosses(c){if(!c.bosses)c.bosses=[]; if(!Array.isArray(c.unusedBases))c.unusedBases=[]; c.bosses.forEach(cb=>{if(!cb.party)cb.party=1;}); for(const b of state.bosses){if(!c.bosses.some(x=>x.id===b.id))c.bosses.push({id:b.id,enabled:false,done:false,price:b.price,party:1});}}
 function render(){state.characters.forEach(ensureCharBosses); if(!selected&&state.characters[0])selected=state.characters[0].id; const all=state.characters.filter(isBossIncluded).map(charTotals); const weekly=all.reduce((a,t)=>a+t.w,0), monthly=all.reduce((a,t)=>a+t.m,0), done=all.reduce((a,t)=>a+t.d,0), cnt=all.reduce((a,t)=>a+t.cnt,0); ['sChars'].forEach(id=>document.getElementById(id).textContent=state.characters.length); document.getElementById('sWeekly').textContent=won(weekly);document.getElementById('sDone').textContent=won(done);document.getElementById('sMonthly').textContent=won(monthly);document.getElementById('dTotal').textContent=won(weekly);document.getElementById('dMonthly').textContent=won(monthly);document.getElementById('dGrand').textContent=won(weekly+monthly);document.getElementById('dDone').textContent=won(done);
  renderCharLists(); renderCharDetail(); renderBosses(); renderDash(); renderNotices(); renderSundayAlert();}
-function selectedBossInline(c){ensureCharBosses(c); const rows=(c.bosses||[]).map(cb=>({cb,b:state.bosses.find(x=>x.id===cb.id)})).filter(x=>x.b&&x.cb.enabled).sort((a,b)=>effectivePrice(a.cb,a.b)-effectivePrice(b.cb,b.b)); if(!rows.length)return '<div class="inlineBosses"><div class="inlineBoss"><span></span><span>저장된 보스 없음</span><span></span></div></div>'; const total=rows.reduce((s,x)=>s+effectivePrice(x.cb,x.b),0); const done=rows.filter(x=>x.cb.done).reduce((s,x)=>s+effectivePrice(x.cb,x.b),0); const pct=total?Math.round(done/total*100):0; return '<div class="inlineBosses">'+rows.map(({cb,b})=>`<div class="inlineBoss ${cb.done?'done':''}"><button class="miniCheck" data-inlinecheck="${c.id}|${b.id}">${cb.done?'✓':''}</button><span>${bossBaseName(b.name)} ${bossDifficulty(b.name)}</span><span>${b.type==='monthly'?'월간 · ':''}${cb.party&&cb.party>1?cb.party+'인 · ':''}${won(effectivePrice(cb,b))}</span></div>`).join('')+`<div class="progressWrap"><div class="progressBar" style="width:${pct}%"></div></div><div class="progressText">완료 ${won(done)} / 남음 ${won(total-done)} · ${pct}%</div></div>`;}
-function bossProgress(c){ensureCharBosses(c); if(!isBossIncluded(c))return {done:0,total:0,pct:0}; const rows=(c.bosses||[]).map(cb=>({cb,b:state.bosses.find(x=>x.id===cb.id)})).filter(x=>x.b&&x.cb.enabled); const total=rows.length; const done=rows.filter(x=>x.cb.done).length; return {done,total,pct:total?Math.round(done/total*100):0};}
+function selectedBossInline(c){ensureCharBosses(c); const rows=(c.bosses||[]).map(cb=>({cb,b:state.bosses.find(x=>x.id===cb.id)})).filter(x=>x.b&&x.cb.enabled&&(!isChallengersBoss(x.b)||isChallengersChar(c))).sort((a,b)=>effectivePrice(a.cb,a.b)-effectivePrice(b.cb,b.b)); if(!rows.length)return '<div class="inlineBosses"><div class="inlineBoss"><span></span><span>저장된 보스 없음</span><span></span></div></div>'; const total=rows.reduce((s,x)=>s+effectivePrice(x.cb,x.b),0); const done=rows.filter(x=>x.cb.done).reduce((s,x)=>s+effectivePrice(x.cb,x.b),0); const pct=total?Math.round(done/total*100):0; return '<div class="inlineBosses">'+rows.map(({cb,b})=>`<div class="inlineBoss ${cb.done?'done':''}"><button class="miniCheck" data-inlinecheck="${c.id}|${b.id}">${cb.done?'✓':''}</button><span>${bossBaseName(b.name)} ${bossDifficulty(b.name)}</span><span>${b.type==='monthly'?'월간 · ':''}${cb.party&&cb.party>1?cb.party+'인 · ':''}${won(effectivePrice(cb,b))}</span></div>`).join('')+`<div class="progressWrap"><div class="progressBar" style="width:${pct}%"></div></div><div class="progressText">완료 ${won(done)} / 남음 ${won(total-done)} · ${pct}%</div></div>`;}
+function bossProgress(c){ensureCharBosses(c); if(!isBossIncluded(c))return {done:0,total:0,pct:0}; const rows=(c.bosses||[]).map(cb=>({cb,b:state.bosses.find(x=>x.id===cb.id)})).filter(x=>x.b&&x.cb.enabled&&(!isChallengersBoss(x.b)||isChallengersChar(c))); const total=rows.length; const done=rows.filter(x=>x.cb.done).length; return {done,total,pct:total?Math.round(done/total*100):0};}
 function progressHtml(c){const p=bossProgress(c); if(!isBossIncluded(c))return '<span class="excludeBadge">보스 집계 제외</span>'; return `<div class="charProgressRow"><div class="charProgressTrack"><div class="charProgressFill" style="width:${p.pct}%"></div></div><div class="charProgressText">${p.done} / ${p.total}</div></div>`;}
 function charTileHtml(c){const t=charTotals(c); const l=links(c); return `<div class="charTile ${c.id===selected?'active':''}" data-charcard="${c.id}"><button class="bossMenuDots" data-charmenu="${c.id}" title="수정/삭제">⋯</button><div class="charName">${c.name}</div><div class="charMeta">${c.world||'-'} · ${c.job||'-'} · Lv.${c.level||'-'}</div>${progressHtml(c)}<div class="charMoneyLine"><span>주간 ${won(t.w)}</span><span>월간 ${won(t.m)}</span></div><div class="miniLinks"><a class="btn pink" target="_blank" href="${l.boss}">보스</a><a class="btn blue" target="_blank" href="${l.info}">장비</a><a class="btn green" target="_blank" href="${l.spec}">스펙</a></div></div>`;}
 function partyControlHtml(cb,b){const party=Number(cb.party||1)||1; const priceText=`${party}인 파티 · 1인당 ${won(effectivePrice(cb,b))}`; const otherVal=party>=3?String(party):''; return `<span class="savedHint">${priceText}</span><div class="partyChips"><button class="partyChip ${party===1?'active':''}" data-partyboss="${b.id}" data-party="1">1인</button><button class="partyChip ${party===2?'active':''}" data-partyboss="${b.id}" data-party="2">2인</button><select class="partyChip ${party>=3?'active':''}" data-partyother="${b.id}"><option value="" ${!otherVal?'selected':''}>기타 ▼</option><option value="3" ${otherVal==='3'?'selected':''}>3인</option><option value="4" ${otherVal==='4'?'selected':''}>4인</option><option value="5" ${otherVal==='5'?'selected':''}>5인</option><option value="6" ${otherVal==='6'?'selected':''}>6인</option></select></div>`;}
@@ -199,15 +189,16 @@ function renderCharLists(){
  const excludedHtml=excluded.length?`<details class="charFold"><summary><span>집계 제외 캐릭터</span><span class="groupMeta">▼ ${excluded.length}명</span></summary><div class="charGrid">${excluded.map(c=>charTileHtml(c)).join('')}</div></details>`:'';
  const html=state.characters.length?`<div class="charSectionTitle"><span>내 캐릭터</span><span class="muted small">카드 클릭 시 보스 집계로 이동</span></div>${includedHtml}${excludedHtml}`:'<div class="empty">캐릭터를 추가해줘</div>';
  document.getElementById('charList').innerHTML=html;
- const bossChars=state.characters.filter(isBossIncluded); const bossHtml=bossChars.length?bossChars.map(c=>{const t=charTotals(c);const btn=`<div class="charBtn ${c.id===selected?'active':''}" data-bosschar="${c.id}"><button class="bossMenuDots" data-charmenu="${c.id}" title="보스 설정">⋯</button><div class="charName" data-bossopen="${c.id}">${c.name}</div><div class="charMeta">${c.world||'-'} · ${c.job||'-'} · Lv.${c.level||'-'}</div>${progressHtml(c)}<div class="charMoneyLine"><span>주간 ${won(t.w)}</span><span>월간 ${won(t.m)}</span></div></div>`; return btn+selectedBossInline(c);}).join(''):'<div class="empty">보스 집계 포함 캐릭터가 없어</div>';
+ const bossChars=state.characters.filter(isBossIncluded); const bossHtml=bossChars.length?bossChars.map(c=>{const t=charTotals(c);const btn=`<div class="charBtn ${c.id===selected?'active':''}" data-bosschar="${c.id}"><button class="bossMenuDots" data-charmenu="${c.id}" title="수정/삭제">⋯</button><div class="charName" data-bossopen="${c.id}">${c.name}</div><div class="charMeta">${c.world||'-'} · ${c.job||'-'} · Lv.${c.level||'-'}</div>${progressHtml(c)}<div class="charMoneyLine"><span>주간 ${won(t.w)}</span><span>월간 ${won(t.m)}</span></div></div>`; return btn+selectedBossInline(c);}).join(''):'<div class="empty">보스 집계 포함 캐릭터가 없어</div>';
  document.getElementById('bossCharList').innerHTML=bossHtml;
  document.querySelectorAll('[data-charcard]').forEach(card=>{
    card.onclick=(ev)=>{
      if(ev.target.closest('a')||ev.target.closest('[data-charmenu]'))return;
      const c=state.characters.find(x=>x.id===card.dataset.charcard);
      selected=card.dataset.charcard;
-     if(c&&isBossIncluded(c)){bossPickerVisible=true; render(); switchView('bosses'); requestAnimationFrame(()=>{const activeBtn=document.querySelector('#bossCharList .charBtn.active'); if(!activeBtn)return; const aside=document.querySelector('#bosses aside.card'); const stickyHead=document.querySelector('.bossStickyHead'); const stickyH=(stickyHead?.offsetHeight||0)+10; if(aside&&aside.scrollHeight>aside.clientHeight){aside.scrollTo({top:activeBtn.getBoundingClientRect().top-aside.getBoundingClientRect().top+aside.scrollTop-stickyH,behavior:'smooth'});}else{window.scrollTo({top:activeBtn.getBoundingClientRect().top+window.scrollY-stickyH,behavior:'smooth'});}});}
-     else{render(); toast('보스 집계 제외 캐릭터야');}
+     render();
+     if(c&&isBossIncluded(c)) switchView('bosses');
+     else toast('보스 집계 제외 캐릭터야');
    };
  });
  document.querySelectorAll('[data-bosschar]').forEach(card=>{
@@ -222,6 +213,7 @@ function renderCharLists(){
      ev.stopPropagation();
      selected=name.dataset.bossopen;
      render();
+     openBossSelectModal(name.dataset.bossopen);
    };
  });
  document.querySelectorAll('[data-charmenu]').forEach(btn=>btn.onclick=(e)=>{
@@ -229,11 +221,7 @@ function renderCharLists(){
    e.stopPropagation();
    selected=btn.dataset.charmenu;
    render();
-   if(btn.closest('[data-bosschar]')){
-     openBossSelectModal(btn.dataset.charmenu);
-   } else {
-     openCharacterMenu(btn.dataset.charmenu);
-   }
+   openCharacterMenu(btn.dataset.charmenu);
  });
  document.querySelectorAll('[data-inlinecheck]').forEach(btn=>btn.onclick=(e)=>{e.stopPropagation(); const [cid,bid]=btn.dataset.inlinecheck.split('|'); const c=state.characters.find(x=>x.id===cid); if(!c)return; const cb=(c.bosses||[]).find(x=>x.id===bid); if(!cb)return; cb.done=!cb.done; cb.enabled=true; save();});
 }
@@ -241,7 +229,7 @@ function renderCharDetail(){/* 캐릭터 목록 카드의 Maplescouter 버튼은
 function bossBaseName(name){return (name||'').replace(/\s*\([^)]*\)\s*$/,'').trim()}
 function bossDifficulty(name){const m=(name||'').match(/\(([^)]*)\)/); return m?m[1]:'기본'}
 function bossOrderRank(base){
- const order=['매그너스','블러디 퀸','벨룸','파풀라투스','스우','데미안','가디언 엔젤 슬라임','루시드','윌','더스크','듄켈','진 힐라','검은 마법사','선택받은 세렌','감시자 칼로스','최초의 대적자','카링','찬란한 흉성','림보','발드릭스','유피테르'];
+ const order=['매그너스','블러디 퀸','벨룸','파풀라투스','스우','데미안','가디언 엔젤 슬라임','루시드','윌','더스크','듄켈','진 힐라','검은 마법사','선택받은 세렌','감시자 칼로스','최초의 대적자','카링','찬란한 흉성','림보','발드릭스','유피테르','메이린'];
  const alias={'하매':'매그너스','카퀸':'블러디 퀸','카벨':'벨룸','파풀':'파풀라투스','슬라임':'가디언 엔젤 슬라임','검마':'검은 마법사','세렌':'선택받은 세렌','칼로스':'감시자 칼로스','근원의 폭주':'찬란한 흉성','유니트르':'유피테르','키링':'카링','발드락스':'발드릭스'};
  const key=alias[base]||base;
  const idx=order.indexOf(key);
@@ -296,7 +284,7 @@ function renderBosses(){
  if(!c||!isBossIncluded(c)){el.innerHTML='<div class="empty">보스 집계 포함 캐릭터를 선택해줘</div>';return}
  if(!bossPickerVisible){el.innerHTML='<div class="empty">집계 캐릭터의 ⋯ 버튼을 누르면 보스 결정석 선택이 열려요</div>';return}
  ensureCharBosses(c);
- let rows=state.bosses.map(b=>({b,cb:c.bosses.find(x=>x.id===b.id)})).filter(x=>x.b);
+ let rows=state.bosses.map(b=>({b,cb:c.bosses.find(x=>x.id===b.id)})).filter(x=>x.b&&(!isChallengersBoss(x.b)||isChallengersChar(c)));
  const grouped={};
  rows.forEach(x=>{const base=bossBaseName(x.b.name); (grouped[base]??=[]).push(x);});
  let groups=Object.keys(grouped).map(base=>{
@@ -381,7 +369,7 @@ function bossModalGroups(){
  const c=state.characters.find(x=>x.id===pickerCharId);
  if(!c)return [];
  ensureCharBosses(c);
- let rows=state.bosses.map(b=>({b,cb:c.bosses.find(x=>x.id===b.id)})).filter(x=>x.b);
+ let rows=state.bosses.map(b=>({b,cb:c.bosses.find(x=>x.id===b.id)})).filter(x=>x.b&&(!isChallengersBoss(x.b)||isChallengersChar(c)));
  const grouped={};
  rows.forEach(x=>{const base=bossBaseName(x.b.name); (grouped[base]??=[]).push(x);});
  return Object.keys(grouped).map(base=>{
@@ -486,11 +474,14 @@ function markSundaySeen(){
 }
 
 function openModal(title,body,mode,payload){modalMode=mode;modalPayload=payload;document.getElementById('modalTitle').textContent=title;document.getElementById('modalBody').innerHTML=body;document.getElementById('saveModal').style.display='';document.getElementById('modal').classList.add('show')}
-function closeModal(){document.getElementById('modal').classList.remove('show');document.querySelector('.modalBox')?.classList.remove('wide');document.getElementById('saveModal').style.display='';document.getElementById('saveModal').textContent='저장';document.getElementById('modalDelete').style.display='none';document.getElementById('modalDelete').onclick=null; pickerDraft=null; pickerCharId=null;}
-function openChar(c={}){openModal(c.id?'캐릭터 수정':'캐릭터 추가',`<div class="formGrid"><div class="field"><label>캐릭터명</label><input id="mName" value="${c.name||''}"></div><div class="field"><label>월드</label><input id="mWorld" value="${c.world||''}"></div><div class="field"><label>직업</label><input id="mJob" value="${c.job||''}"></div><div class="field"><label>레벨</label><input id="mLevel" value="${c.level||''}"></div></div><label class="checkField" style="margin-top:10px"><input id="mIncludeBoss" type="checkbox" ${c.includeBoss!==false?'checked':''}> 보스 집계 포함</label><p class="muted small">체크 해제하면 캐릭터 탭과 API 조회/Maplescouter 링크는 유지되고, 보스 집계와 수익 합산에서는 제외돼요.</p>`, 'char', c); if(c.id){const delBtn=document.getElementById('modalDelete'); delBtn.style.display=''; delBtn.onclick=()=>{if(!confirm(`${c.name} 캐릭터를 삭제할까?`))return; state.characters=state.characters.filter(x=>x.id!==c.id); if(selected===c.id)selected=state.characters[0]?.id||null; closeModal(); save(); toast('캐릭터 삭제 완료');};}}
+function closeModal(){document.getElementById('modal').classList.remove('show');document.querySelector('.modalBox')?.classList.remove('wide');document.getElementById('saveModal').style.display='';document.getElementById('saveModal').textContent='저장'; pickerDraft=null; pickerCharId=null;}
+function openChar(c={}){openModal(c.id?'캐릭터 수정':'캐릭터 추가',`<div class="formGrid"><div class="field"><label>캐릭터명</label><input id="mName" value="${c.name||''}"></div><div class="field"><label>월드</label><input id="mWorld" value="${c.world||''}"></div><div class="field"><label>직업</label><input id="mJob" value="${c.job||''}"></div><div class="field"><label>레벨</label><input id="mLevel" value="${c.level||''}"></div></div><label class="checkField" style="margin-top:10px"><input id="mIncludeBoss" type="checkbox" ${c.includeBoss!==false?'checked':''}> 보스 집계 포함</label><p class="muted small">체크 해제하면 캐릭터 탭과 API 조회/Maplescouter 링크는 유지되고, 보스 집계와 수익 합산에서는 제외돼요.</p>`, 'char', c)}
 function openCharacterMenu(charId){
  const c=state.characters.find(x=>x.id===charId); if(!c)return;
- openChar(c);
+ openModal(c.name,`<div class="stack"><button class="btn primary" id="menuEditChar" style="width:100%">정보 수정</button><button class="btn pink" id="menuDeleteChar" style="width:100%">삭제</button><p class="muted small" style="margin:4px 0 0">수정하거나 삭제할 수 있어요.</p></div>`, 'charMenu', {id:charId});
+ document.getElementById('saveModal').style.display='none';
+ document.getElementById('menuEditChar').onclick=()=>{closeModal(); openChar(c);};
+ document.getElementById('menuDeleteChar').onclick=()=>{if(!confirm(`${c.name} 캐릭터를 삭제할까?`))return; state.characters=state.characters.filter(x=>x.id!==charId); if(selected===charId)selected=state.characters[0]?.id||null; closeModal(); save(); toast('캐릭터 삭제 완료');};
 }
 
 function openBoss(){openModal('보스 추가',`<div class="formGrid"><div class="field"><label>보스명</label><input id="mBossName"></div><div class="field"><label>결정석 금액</label><input id="mBossPrice" type="number"></div><div class="field"><label>구분</label><select id="mBossType"><option value="weekly">주간</option><option value="monthly">월간</option></select></div></div>`, 'boss', {})}
@@ -586,8 +577,7 @@ document.getElementById('quickAddChar').onclick=()=>addCharacterByName(document.
 
 document.querySelectorAll('[data-notice-tab]').forEach(btn=>btn.onclick=()=>{document.querySelectorAll('.noticeTab,.noticePanel').forEach(x=>x.classList.remove('active')); btn.classList.add('active'); const map={notice:'noticeList',event:'eventList',sunday:'sundayList'}; document.getElementById(map[btn.dataset.noticeTab]||'noticeList').classList.add('active'); if(btn.dataset.noticeTab==='sunday')markSundaySeen();});
 document.getElementById('resetWeek').onclick=()=>{state.characters.forEach(c=>(c.bosses||[]).forEach(cb=>{const b=state.bosses.find(x=>x.id===cb.id); if(b?.type==='weekly')cb.done=false;}));save();toast('주간 체크 초기화')};
-document.getElementById('markSelectedDone').onclick=()=>{const c=selectedIncludedChar(); if(!c)return; ensureCharBosses(c); const enabled=(c.bosses||[]).filter(cb=>cb.enabled); const allDone=enabled.length>0&&enabled.every(cb=>cb.done); setSelectedCharacterDone(!allDone);};
-document.querySelector('.bossStickyHead').onclick=(e)=>{if(e.target.closest('button'))return; window.scrollTo({top:0,behavior:'smooth'});};
+document.getElementById('markSelectedDone').onclick=()=>setSelectedCharacterDone(true);
 function normalizeFeed(data){
  const direct=[data.events,data.event_notice,data.notice_event,data.event,data.event_list,data.notice,data.notices,data.notice_list,data.data,data.list,data.rows].find(Array.isArray);
  if(direct) return direct;
@@ -680,48 +670,6 @@ function initPwaInstall(){
  }
 }
 initPwaInstall();
-
-// 동기화
-const SYNC_CODE_KEY='mapleBossSyncCode';
-const syncCodeEl=document.getElementById('syncCode');
-syncCodeEl.value=localStorage.getItem(SYNC_CODE_KEY)||'';
-syncCodeEl.oninput=()=>localStorage.setItem(SYNC_CODE_KEY,syncCodeEl.value.trim());
-
-async function syncUpload(){
-  const code=syncCodeEl.value.trim();
-  if(!code)return toast('동기화 코드를 입력해줘');
-  const status=document.getElementById('syncStatus');
-  status.textContent='업로드 중...';
-  try{
-    const res=await fetch(`${WORKER_URL}/api/sync?code=${encodeURIComponent(code)}`,{
-      method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(state)
-    });
-    if(!res.ok)throw new Error(await res.text());
-    status.textContent='업로드 완료 ✓ '+new Date().toLocaleTimeString();
-    toast('클라우드에 저장했어');
-  }catch(e){status.textContent='업로드 실패: '+e.message;toast('업로드 실패');}
-}
-
-async function syncDownload(){
-  const code=syncCodeEl.value.trim();
-  if(!code)return toast('동기화 코드를 입력해줘');
-  const status=document.getElementById('syncStatus');
-  status.textContent='다운로드 중...';
-  try{
-    const res=await fetch(`${WORKER_URL}/api/sync?code=${encodeURIComponent(code)}`);
-    if(res.status===404){status.textContent='해당 코드로 저장된 데이터가 없어';return toast('저장된 데이터 없음');}
-    if(!res.ok)throw new Error(await res.text());
-    const data=await res.json();
-    if(confirm('현재 데이터를 클라우드 데이터로 덮어쓸까?\n되돌릴 수 없어.')){
-      state=migrateLoadedState(data);save();
-      status.textContent='다운로드 완료 ✓ '+new Date().toLocaleTimeString();
-      toast('데이터 불러오기 완료');
-    }
-  }catch(e){status.textContent='다운로드 실패: '+e.message;toast('다운로드 실패');}
-}
-
-document.getElementById('syncUpload').onclick=syncUpload;
-document.getElementById('syncDownload').onclick=syncDownload;
 
 render();
 setTimeout(autoRefreshFeeds,600);
