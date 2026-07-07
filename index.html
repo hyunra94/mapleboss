@@ -214,9 +214,27 @@ function renderCharLists(){
      if(ev.target.closest('a')||ev.target.closest('[data-charmenu]'))return;
      const c=state.characters.find(x=>x.id===card.dataset.charcard);
      selected=card.dataset.charcard;
-     render();
-     if(c&&isBossIncluded(c)) switchView('bosses');
-     else toast('보스 집계 제외 캐릭터야');
+     if(c&&isBossIncluded(c)){
+       bossPickerVisible=true;
+       render();
+       switchView('bosses');
+       requestAnimationFrame(()=>{
+         const active=document.querySelector('[data-bosschar].active');
+         if(!active){window.scrollTo({top:0,behavior:'smooth'});return;}
+         const stickyHead=document.querySelector('.bossStickyHead');
+         const headH=stickyHead?stickyHead.offsetHeight:0;
+         const aside=document.querySelector('#bosses aside.card');
+         if(aside&&aside.scrollHeight>aside.clientHeight){
+           aside.scrollTo({top:active.offsetTop-headH-4,behavior:'smooth'});
+         } else {
+           const rect=active.getBoundingClientRect();
+           window.scrollBy({top:rect.top-headH-8,behavior:'smooth'});
+         }
+       });
+     } else {
+       render();
+       toast('보스 집계 제외 캐릭터야');
+     }
    };
  });
  document.querySelectorAll('[data-bosschar]').forEach(card=>{
