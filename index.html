@@ -86,13 +86,14 @@
 
   <section id="settings" class="view"><div class="dashGrid"><div class="card"><h2>API / 데이터</h2><div class="stack"><div class="presetBox"><b>Worker 연결</b><p class="muted small" style="margin:6px 0 0">캐릭터 자동 조회와 메이플 알림은 Cloudflare Worker를 통해 호출돼요. API Key는 앱/깃허브 코드에 저장하지 않아요.</p><p class="muted small" style="margin:6px 0 0;word-break:break-all">https://mapleboss.hyunra94.workers.dev</p></div><div class="row"><button class="btn" id="exportData">JSON 내보내기</button><label class="btn" for="importData">JSON 가져오기</label><input id="importData" type="file" accept="application/json" style="display:none"></div><p class="muted small">데이터는 이 기기 브라우저 localStorage에 저장돼요. GitHub에는 API Key가 들어가지 않아요.</p></div></div><div class="card"><h2>웹앱 설치</h2><div class="stack"><button class="btn primary" id="installPwa">앱으로 설치</button><p class="muted small" id="installHint">설치 버튼이 안 뜨면 브라우저 메뉴에서 ‘홈 화면에 추가’ 또는 ‘앱 설치’를 선택해줘. GitHub Pages처럼 HTTPS 주소에서 열어야 설치가 가능해요.</p></div></div><div class="card"><h2>Maplescouter 링크 규칙</h2><p class="muted small">캐릭터명만 바꿔서 아래 구조로 열어요.</p><pre style="white-space:pre-wrap;background:#fffdf5;border:2px dashed var(--line);border-radius:16px;padding:12px">/ko/result?name=캐릭터명&preset=00000
 /ko/info?name=캐릭터명&preset=00000
-/ko/spec-order?name=캐릭터명&preset=00000</pre></div></div></section>
+/ko/spec-order?name=캐릭터명&preset=00000</pre></div><div class="card"><h2>기기 동기화</h2><div class="stack"><div class="presetBox"><b>동기화 코드</b><p class="muted small" style="margin:6px 0 0">코드를 아는 기기끼리 데이터를 공유해요. 본인만 아는 코드를 사용해줘.</p></div><input id="syncCode" placeholder="동기화 코드 입력 (예: maple1234)"><div class="row"><button class="btn green" id="syncUpload" style="flex:1">업로드 ↑ (이 기기 → 클라우드)</button><button class="btn blue" id="syncDownload" style="flex:1">다운로드 ↓ (클라우드 → 이 기기)</button></div><p class="muted small" id="syncStatus"></p></div></div></div></section>
 </div>
 
 <div class="modal" id="modal"><div class="modalBox"><div class="modalHead"><h2 id="modalTitle">편집</h2><button class="modalX" id="closeModalX" title="닫기">×</button></div><div id="modalBody"></div><div class="actions"><button class="btn ghost" id="cancelModal">취소</button><button class="btn primary" id="saveModal">저장</button></div></div></div><div class="toast" id="toast"></div>
 <script>
 const LS='mapleBossSketchV5';
 const WORKER_URL='https://mapleboss.hyunra94.workers.dev';
+const SYNC_CODE_KEY='mapleBossSyncCode';
 const NOTICE_CACHE_MS=30*60*1000; // 알림/이벤트 자동 갱신 캐시: 30분
 const BOSS_PRESET_RAW=[
  ['매그너스 (하드)',8560000,'weekly'],
@@ -166,7 +167,20 @@ function migrateLoadedState(s){
  return {characters:chars,bosses:newBosses,notices:s.notices||[]};
 }
 function load(){try{const s=JSON.parse(localStorage.getItem(LS)||'{}');return migrateLoadedState(s)}catch(e){return {characters:[],bosses:DEFAULT_BOSSES,notices:[]}}}
-function save(){localStorage.setItem(LS,JSON.stringify(state));render();}
+let autoSyncTimer=null;
+function save(){localStorage.setItem(LS,JSON.stringify(state));render();autoSyncDebounced();}
+function autoSyncDebounced(){
+  const code=(localStorage.getItem(SYNC_CODE_KEY)||'').trim();
+  if(!code)return;
+  clearTimeout(autoSyncTimer);
+  autoSyncTimer=setTimeout(async()=>{
+    try{
+      await fetch(`${WORKER_URL}/api/sync?code=${encodeURIComponent(code)}`,{
+        method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(state)
+      });
+    }catch(e){}
+  },3000);
+}
 function won(n){n=Number(n)||0; if(n>=100000000)return (n/100000000).toFixed(n%100000000?1:0)+'억'; if(n>=10000)return Math.round(n/10000).toLocaleString()+'만'; return n.toLocaleString();}
 function toast(t){const el=document.getElementById('toast');el.textContent=t;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),1600)}
 function enc(n){return encodeURIComponent(n||'')}
@@ -215,16 +229,18 @@ function renderCharLists(){
    name.onclick=(ev)=>{
      ev.stopPropagation();
      selected=name.dataset.bossopen;
+     bossPickerVisible=true;
      render();
-     openBossSelectModal(name.dataset.bossopen);
    };
  });
  document.querySelectorAll('[data-charmenu]').forEach(btn=>btn.onclick=(e)=>{
    e.preventDefault();
    e.stopPropagation();
+   const isInBossCharList=!!btn.closest('#bossCharList');
    selected=btn.dataset.charmenu;
    render();
-   openCharacterMenu(btn.dataset.charmenu);
+   if(isInBossCharList) openBossSelectModal(btn.dataset.charmenu);
+   else openCharacterMenu(btn.dataset.charmenu);
  });
  document.querySelectorAll('[data-inlinecheck]').forEach(btn=>btn.onclick=(e)=>{e.stopPropagation(); const [cid,bid]=btn.dataset.inlinecheck.split('|'); const c=state.characters.find(x=>x.id===cid); if(!c)return; const cb=(c.bosses||[]).find(x=>x.id===bid); if(!cb)return; cb.done=!cb.done; cb.enabled=true; save();});
 }
@@ -417,7 +433,7 @@ function renderBossSelectModalBody(keepScroll=false){
  const groupHtml=(g)=>{
    if(g.individual){const item=g.items[0];const diff=bossDifficulty(item.b.name);return `<div class="inlinePickGroup unused" data-mdgroup="${g.base}"><div class="inlinePickHead"><span>${g.base} <span class="small" style="font-weight:900;color:var(--muted)">(${diff})</span></span><span class="row" style="gap:6px;justify-content:flex-end"><span class="savedHint">${item.b.type==='monthly'?'월간':'주간'} · ${won(item.b.price)}</span><button class="unusedToggle" data-mdrestoreindividual="${item.b.id}">사용</button></span></div></div>`;}
    const showSub=unusedSubOpen.has(g.base);
-   return `<div class="inlinePickGroup" data-mdgroup="${g.base}"><div class="inlinePickHead"><span>${g.base}</span><span class="row" style="gap:6px;justify-content:flex-end"><span class="savedHint">${g.selectedItem?'선택: '+bossDifficulty(g.selectedItem.b.name):'미선택'}</span><button class="unusedToggle ${showSub?'active':''}" data-mdunused="${g.base}">${showSub?'닫기':'미사용'}</button></span></div><div class="inlinePickBody">${g.items.map(({b})=>{const sel=pickerDraft.selectedByBase[g.base]===b.id; const party=pickerDraft.partyById[b.id]||1; const diff=bossDifficulty(b.name); return `<div><div class="inlinePickBtn ${sel?'selected':''}" data-mdenableboss="${b.id}" data-mdbase="${g.base}"><b>${sel?'✓ ':''}${diff}</b>${sel?partyControlHtmlDraft(b.id,party,b.price,b.type):`<span class="savedHint">${b.type==='monthly'?'월간':'주간'} · 1인당 ${won(b.price)}</span>`}</div>${showSub?`<button class="unusedToggle" style="margin-top:4px;width:100%" data-mdhideboss="${b.id}" data-mdbase="${g.base}">미사용</button>`:''}</div>`}).join('')}</div></div>`;
+   return `<div class="inlinePickGroup" data-mdgroup="${g.base}"><div class="inlinePickHead"><span>${g.base}</span><span class="row" style="gap:6px;justify-content:flex-end"><span class="savedHint">${g.selectedItem?'선택: '+bossDifficulty(g.selectedItem.b.name):'미선택'}</span><button class="unusedToggle ${showSub?'active':''}" data-mdunused="${g.base}">${showSub?'닫기':'미사용'}</button></span></div><div class="inlinePickBody"${g.items.length===1?' style="grid-template-columns:1fr"':''}>${g.items.map(({b})=>{const sel=pickerDraft.selectedByBase[g.base]===b.id; const party=pickerDraft.partyById[b.id]||1; const diff=bossDifficulty(b.name); return `<div><div class="inlinePickBtn ${sel?'selected':''}" data-mdenableboss="${b.id}" data-mdbase="${g.base}"><b>${sel?'✓ ':''}${diff}</b>${sel?partyControlHtmlDraft(b.id,party,b.price,b.type):`<span class="savedHint">${b.type==='monthly'?'월간':'주간'} · 1인당 ${won(b.price)}</span>`}</div>${showSub?`<button class="unusedToggle" style="margin-top:4px;width:100%" data-mdhideboss="${b.id}" data-mdbase="${g.base}">미사용</button>`:''}</div>`}).join('')}</div></div>`;
  };
  const compactMain=mainGroups.filter(g=>compactMainNames.includes(g.base)&&g.items.length===1);
  const normalMain=mainGroups.filter(g=>!(compactMainNames.includes(g.base)&&g.items.length===1));
@@ -504,10 +520,14 @@ function closeModal(){document.getElementById('modal').classList.remove('show');
 function openChar(c={}){openModal(c.id?'캐릭터 수정':'캐릭터 추가',`<div class="formGrid"><div class="field"><label>캐릭터명</label><input id="mName" value="${c.name||''}"></div><div class="field"><label>월드</label><input id="mWorld" value="${c.world||''}"></div><div class="field"><label>직업</label><input id="mJob" value="${c.job||''}"></div><div class="field"><label>레벨</label><input id="mLevel" value="${c.level||''}"></div></div><label class="checkField" style="margin-top:10px"><input id="mIncludeBoss" type="checkbox" ${c.includeBoss!==false?'checked':''}> 보스 집계 포함</label><p class="muted small">체크 해제하면 캐릭터 탭과 API 조회/Maplescouter 링크는 유지되고, 보스 집계와 수익 합산에서는 제외돼요.</p>`, 'char', c)}
 function openCharacterMenu(charId){
  const c=state.characters.find(x=>x.id===charId); if(!c)return;
- openModal(c.name,`<div class="stack"><button class="btn primary" id="menuEditChar" style="width:100%">정보 수정</button><button class="btn pink" id="menuDeleteChar" style="width:100%">삭제</button><p class="muted small" style="margin:4px 0 0">수정하거나 삭제할 수 있어요.</p></div>`, 'charMenu', {id:charId});
- document.getElementById('saveModal').style.display='none';
- document.getElementById('menuEditChar').onclick=()=>{closeModal(); openChar(c);};
- document.getElementById('menuDeleteChar').onclick=()=>{if(!confirm(`${c.name} 캐릭터를 삭제할까?`))return; state.characters=state.characters.filter(x=>x.id!==charId); if(selected===charId)selected=state.characters[0]?.id||null; closeModal(); save(); toast('캐릭터 삭제 완료');};
+ openChar(c);
+ const actions=document.querySelector('.actions');
+ const delBtn=document.createElement('button');
+ delBtn.className='btn pink';
+ delBtn.style='margin-right:auto';
+ delBtn.textContent='삭제';
+ delBtn.onclick=()=>{if(!confirm(`${c.name} 캐릭터를 삭제할까?`))return; state.characters=state.characters.filter(x=>x.id!==charId); if(selected===charId)selected=state.characters[0]?.id||null; closeModal(); save(); toast('캐릭터 삭제 완료');};
+ actions.insertBefore(delBtn,actions.firstChild);
 }
 
 function openBoss(){openModal('보스 추가',`<div class="formGrid"><div class="field"><label>보스명</label><input id="mBossName"></div><div class="field"><label>결정석 금액</label><input id="mBossPrice" type="number"></div><div class="field"><label>구분</label><select id="mBossType"><option value="weekly">주간</option><option value="monthly">월간</option></select></div></div>`, 'boss', {})}
@@ -696,6 +716,44 @@ function initPwaInstall(){
  }
 }
 initPwaInstall();
+
+const syncCodeEl=document.getElementById('syncCode');
+syncCodeEl.value=localStorage.getItem(SYNC_CODE_KEY)||'';
+syncCodeEl.oninput=()=>localStorage.setItem(SYNC_CODE_KEY,syncCodeEl.value.trim());
+
+async function syncUpload(){
+  const code=syncCodeEl.value.trim();
+  if(!code)return toast('동기화 코드를 입력해줘');
+  const status=document.getElementById('syncStatus');
+  status.textContent='업로드 중...';
+  try{
+    const res=await fetch(`${WORKER_URL}/api/sync?code=${encodeURIComponent(code)}`,{
+      method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(state)
+    });
+    if(!res.ok)throw new Error(await res.text());
+    status.textContent='업로드 완료 ✓ '+new Date().toLocaleTimeString();
+    toast('클라우드에 저장했어');
+  }catch(e){status.textContent='업로드 실패: '+e.message;toast('업로드 실패');}
+}
+async function syncDownload(){
+  const code=syncCodeEl.value.trim();
+  if(!code)return toast('동기화 코드를 입력해줘');
+  const status=document.getElementById('syncStatus');
+  status.textContent='다운로드 중...';
+  try{
+    const res=await fetch(`${WORKER_URL}/api/sync?code=${encodeURIComponent(code)}`);
+    if(res.status===404){status.textContent='해당 코드로 저장된 데이터가 없어';return toast('저장된 데이터 없음');}
+    if(!res.ok)throw new Error(await res.text());
+    const data=await res.json();
+    if(confirm('현재 데이터를 클라우드 데이터로 덮어쓸까?\n되돌릴 수 없어.')){
+      state=migrateLoadedState(data);save();
+      status.textContent='다운로드 완료 ✓ '+new Date().toLocaleTimeString();
+      toast('데이터 불러오기 완료');
+    }
+  }catch(e){status.textContent='다운로드 실패: '+e.message;toast('다운로드 실패');}
+}
+document.getElementById('syncUpload').onclick=syncUpload;
+document.getElementById('syncDownload').onclick=syncDownload;
 
 render();
 setTimeout(autoRefreshFeeds,600);
