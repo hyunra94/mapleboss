@@ -332,8 +332,8 @@ function renderBosses(){
    if(g.individual){const item=g.items[0];const diff=bossDifficulty(item.b.name);return `<div class="inlinePickGroup unused" data-inlinegroup="${g.base}"><div class="inlinePickHead"><span>${g.base} <span class="small" style="font-weight:900;color:var(--muted)">(${diff})</span></span><span class="savedHint">미사용</span></div></div>`;}
    return `<div class="inlinePickGroup ${isUnusedBase(c,g.base)?'unused':''}" data-inlinegroup="${g.base}"><div class="inlinePickHead"><span>${g.base}</span><span class="savedHint">${g.selectedItem?'선택: '+bossDifficulty(g.selectedItem.b.name):'미선택'}</span></div><div class="inlinePickBody">${g.items.map(({cb,b})=>{cb=cb||{id:b.id,enabled:false,done:false,price:b.price,party:1}; const sel=!!cb.enabled; const party=Number(cb.party||1)||1; const diff=bossDifficulty(b.name); return `<div class="inlinePickBtn ${sel?'selected':''}" data-enableboss="${b.id}"><b>${sel?'✓ ':''}${diff}</b>${sel?partyControlHtml(cb,b):`<span class="savedHint">${b.type==='monthly'?'월간':'주간'} · 1인당 ${won(effectivePrice(cb,b))}</span>`}</div>`}).join('')}</div></div>`;
  };
- const compactMain=mainGroups.filter(g=>compactMainNames.includes(g.base)&&g.items.length===1);
- const normalMain=mainGroups.filter(g=>!(compactMainNames.includes(g.base)&&g.items.length===1));
+ const compactMain=mainGroups.filter(g=>g.items.length===1);
+ const normalMain=mainGroups.filter(g=>g.items.length!==1);
  const compactExtra=extraGroups.filter(g=>compactExtraNames.includes(g.base));
  const normalExtra=extraGroups.filter(g=>!compactExtraNames.includes(g.base));
  const mainHtml=`${compactMain.length?`<div class="compactPickGrid">${compactMain.map(groupHtml).join('')}</div>`:''}${normalMain.map(groupHtml).join('')}`;
@@ -434,10 +434,10 @@ function renderBossSelectModalBody(keepScroll=false){
  const groupHtml=(g)=>{
    if(g.individual){const item=g.items[0];const diff=bossDifficulty(item.b.name);return `<div class="inlinePickGroup unused" data-mdgroup="${g.base}"><div class="inlinePickHead"><span>${g.base} <span class="small" style="font-weight:900;color:var(--muted)">(${diff})</span></span><span class="row" style="gap:6px;justify-content:flex-end"><span class="savedHint">${item.b.type==='monthly'?'월간':'주간'} · ${won(item.b.price)}</span><button class="unusedToggle" data-mdrestoreindividual="${item.b.id}">사용</button></span></div></div>`;}
    const showSub=unusedSubOpen.has(g.base);
-   return `<div class="inlinePickGroup" data-mdgroup="${g.base}"><div class="inlinePickHead"><span>${g.base}</span><span class="row" style="gap:6px;justify-content:flex-end"><span class="savedHint">${g.selectedItem?'선택: '+bossDifficulty(g.selectedItem.b.name):'미선택'}</span><button class="unusedToggle ${showSub?'active':''}" data-mdunused="${g.base}">${showSub?'닫기':'미사용'}</button></span></div><div class="inlinePickBody"${g.items.length===1?' style="grid-template-columns:1fr"':''}>${g.items.map(({b})=>{const sel=pickerDraft.selectedByBase[g.base]===b.id; const party=pickerDraft.partyById[b.id]||1; const diff=bossDifficulty(b.name); return `<div><div class="inlinePickBtn ${sel?'selected':''}" data-mdenableboss="${b.id}" data-mdbase="${g.base}"><b>${sel?'✓ ':''}${diff}</b>${sel?partyControlHtmlDraft(b.id,party,b.price,b.type):`<span class="savedHint">${b.type==='monthly'?'월간':'주간'} · 1인당 ${won(b.price)}</span>`}</div>${showSub?`<button class="unusedToggle" style="margin-top:4px;width:100%" data-mdhideboss="${b.id}" data-mdbase="${g.base}">미사용</button>`:''}</div>`}).join('')}</div></div>`;
+   return `<div class="inlinePickGroup" data-mdgroup="${g.base}"><div class="inlinePickHead"><span>${g.base}</span><span class="row" style="gap:6px;justify-content:flex-end"><span class="savedHint">${g.selectedItem?'선택: '+bossDifficulty(g.selectedItem.b.name):'미선택'}</span><button class="unusedToggle ${showSub?'active':''}" data-mdunused="${g.base}">${showSub?'닫기':'미사용'}</button></span></div><div class="inlinePickBody">${g.items.map(({b})=>{const sel=pickerDraft.selectedByBase[g.base]===b.id; const party=pickerDraft.partyById[b.id]||1; const diff=bossDifficulty(b.name); return `<div><div class="inlinePickBtn ${sel?'selected':''}" data-mdenableboss="${b.id}" data-mdbase="${g.base}"><b>${sel?'✓ ':''}${diff}</b>${sel?partyControlHtmlDraft(b.id,party,b.price,b.type):`<span class="savedHint">${b.type==='monthly'?'월간':'주간'} · 1인당 ${won(b.price)}</span>`}</div>${showSub?`<button class="unusedToggle" style="margin-top:4px;width:100%" data-mdhideboss="${b.id}" data-mdbase="${g.base}">미사용</button>`:''}</div>`}).join('')}</div></div>`;
  };
- const compactMain=mainGroups.filter(g=>compactMainNames.includes(g.base)&&g.items.length===1);
- const normalMain=mainGroups.filter(g=>!(compactMainNames.includes(g.base)&&g.items.length===1));
+ const compactMain=mainGroups.filter(g=>g.items.length===1);
+ const normalMain=mainGroups.filter(g=>g.items.length!==1);
  const compactExtra=extraGroups.filter(g=>compactExtraNames.includes(g.base)&&!g.individual);
  const normalExtra=extraGroups.filter(g=>!compactExtraNames.includes(g.base)||g.individual);
  const mainHtml=`${compactMain.length?`<div class="compactPickGrid">${compactMain.map(groupHtml).join('')}</div>`:''}${normalMain.map(groupHtml).join('')}`;
@@ -523,6 +523,7 @@ function openCharacterMenu(charId){
  const c=state.characters.find(x=>x.id===charId); if(!c)return;
  openChar(c);
  const actions=document.querySelector('.actions');
+ actions.querySelectorAll('.btn.pink').forEach(el=>el.remove());
  const delBtn=document.createElement('button');
  delBtn.className='btn pink';
  delBtn.style='margin-right:auto';
